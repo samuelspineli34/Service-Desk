@@ -1,6 +1,7 @@
 import { initSidebar } from '../../components/sidebar';
 import { userService } from '../../services/api/user.service';
 import { User } from '../../interfaces/user.interface';
+import { Modal } from '../../utils/modal';
 
 // 1. Funções globais para o Modal (precisam estar no window para o HTML acessar)
 (window as any).openUserModal = (user?: User) => {
@@ -26,11 +27,18 @@ import { User } from '../../interfaces/user.interface';
     document.getElementById('user-modal')?.classList.add('hidden');
 };
 
-(window as any).deleteUser = async (id: string) => {
-    if (confirm('Delete this user?')) {
-        await userService.deleteUser(id);
-        initPage();
-    }
+(window as any).deleteUser = (id: string) => {
+    Modal.confirm({
+        title: 'Delete User?',
+        message: 'This action cannot be undone. The user will be moved to the archive.',
+        type: 'warning',
+        confirmText: 'Yes, Delete',
+        onConfirm: async () => {
+            await userService.deleteUser(id);
+            initPage();
+            Modal.show({ title: 'Deleted', message: 'User removed successfully.', type: 'success' });
+        }
+    });
 };
 
 const renderUserItem = (user: User): string => {
@@ -45,7 +53,7 @@ const renderUserItem = (user: User): string => {
                 </div>
                 <div>
                     <h4 class="font-bold text-slate-800">${user.name}</h4>
-                    <p class="text-xs text-slate-400 font-mono">${user.id.substring(0,8)}... | ${user.email}</p>
+                    <p class="text-xs text-slate-400 font-mono">${user.email}</p>
                 </div>
             </div>
             <div class="flex gap-2">

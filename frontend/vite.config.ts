@@ -12,9 +12,11 @@ export default defineConfig({
           // Remove a query string se houver (ex: /users?id=1 -> /users)
           const url = req.url?.split('?')[0];
 
-          if (url === '/dashboard') req.url = '/src/pages/dashboard/dashboard.html';
+          if (url === '/login') req.url = '/src/pages/login/login.html';
+          else if (url === '/dashboard') req.url = '/src/pages/dashboard/dashboard.html';
           else if (url === '/users') req.url = '/src/pages/users/user.html';
           else if (url === '/ticket') req.url = '/src/pages/ticket/ticket.html';
+          else if (url === '/profile') req.url = '/src/pages/profile/profile.html';
           
           next();
         });

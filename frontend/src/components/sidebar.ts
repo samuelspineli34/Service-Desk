@@ -1,4 +1,9 @@
 export function initSidebar() {
+    const userJson = localStorage.getItem('user');
+    const user = userJson ? JSON.parse(userJson) : null;
+    const role = user?.role || 'USER';
+    const userName = user?.name || 'Guest User';
+
     const sidebarHtml = `
     <aside class="flex flex-col w-64 h-screen px-5 py-8 overflow-y-auto bg-slate-900 border-r border-slate-700 fixed left-0 top-0">
         <div class="flex items-center gap-x-3 px-2">
@@ -14,10 +19,11 @@ export function initSidebar() {
                 <span class="mx-3 font-medium">Dashboard</span>
             </a>
 
+            ${role === 'ADMIN' ? `
             <a href="/users" class="nav-link flex items-center px-3 py-2 text-slate-300 transition-colors duration-200 rounded-lg hover:bg-slate-800 hover:text-white group">
                 <span class="material-icons-round">group</span>
                 <span class="mx-3 font-medium">Users</span>
-            </a>
+            </a> ` : ''}
 
             <a href="/ticket" class="nav-link flex items-center px-3 py-2 text-slate-300 transition-colors duration-200 rounded-lg hover:bg-slate-800 hover:text-white group">
                 <span class="material-icons-round">confirmation_number</span>
@@ -26,11 +32,17 @@ export function initSidebar() {
         </nav>
 
         <div class="flex items-center gap-x-2 px-2 mt-auto border-t border-slate-800 pt-6 text-white">
-            <img class="w-9 h-9 rounded-full ring-2 ring-blue-500/20" src="https://ui-avatars.com/api/?name=Admin+User&background=0D8ABC&color=fff">
+            <a href="/profile">
+                <img class="w-9 h-9 rounded-full ring-2 ring-blue-500/20" src="https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=0D8ABC&color=fff">
+            </a>    
             <div class="text-left leading-tight">
-                <h1 class="text-sm font-semibold">Admin User</h1>
-                <p class="text-[10px] text-slate-400 font-bold uppercase">Administrator</p>
+                <h1 class="text-sm font-semibold truncate w-32">${userName}</h1>
+                <p class="text-[10px] text-slate-400 font-bold uppercase">${role}</p>
             </div>
+            <!-- Botão de Logout -->
+            <button onclick="localStorage.clear(); window.location.href='/login'" class="ml-auto text-slate-500 hover:text-red-500 transition-colors">
+                <span class="material-icons-round text-sm">logout</span>
+            </button>
         </div>
     </aside>
     `;

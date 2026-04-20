@@ -20,9 +20,14 @@ class UserDAO:
     def get_by_id(self, user_id):
         conn = self.get_connection()
         cursor = conn.cursor()
-        cursor.execute("SELECT id, name, email, department FROM users WHERE id = %s", (user_id,))
+        # Buscamos o password_hash também
+        cursor.execute("SELECT id, name, email, department, role, password_hash FROM users WHERE id = %s", (user_id,))
         row = cursor.fetchone()
-        user = UserDTO(row[0], row[1], row[2], row[3]) if row else None
+        
+        user = None
+        if row:
+            user = UserDTO(row[0], row[1], row[2], row[3], row[4], row[5])
+            
         cursor.close()
         conn.close()
         return user
@@ -56,6 +61,30 @@ class UserDAO:
         cursor = conn.cursor()
         # Soft delete do usuário
         cursor.execute("UPDATE users SET deleted_at = NOW() WHERE id = %s", (user_id,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    def get_by_email(self, email):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, name, email, department, role, password_hash FROM users WHERE email = %s AND deleted_at IS NULL", (email,))
+        row = cursor.fetchone()
+        
+        user = None
+        if row:
+            # Passamos o role (row[4]) diretamente para o DTO
+            user = UserDTO(row[0], row[1], row[2], row[3], row[4])
+            user.password_hash = row[5]
+            
+        cursor.close()
+        conn.close()
+        return user
+    
+    def update_password(self, user_id, new_hash):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("UPDATE users SET password_hash = %s WHERE id = %s", (new_hash, user_id))
         conn.commit()
         cursor.close()
         conn.close()

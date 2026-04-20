@@ -11,41 +11,36 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 </head>
 <body class="bg-slate-50 min-h-screen">
-    
-    <!-- O TS vai injetar a sidebar aqui -->
     <div id="sidebar-container"></div>
-
-    <!-- Main Content com margem para a sidebar -->
     <main class="ml-64 p-10">
         <header class="mb-10">
-            <h1 class="text-3xl font-black text-slate-900 tracking-tight">Dashboard Overview</h1>
-            <p class="text-slate-500">Quick view of your system performance.</p>
+            <h1 class="text-3xl font-black text-slate-900 tracking-tight">System Overview</h1>
         </header>
 
-        <!-- Stats Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+            <!-- Card 1: Active Tickets -->
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 mb-4">
-                    <span class="material-icons-round">confirmation_number</span>
-                </div>
-                <p class="text-slate-500 text-sm font-medium uppercase tracking-wider">Open Tickets</p>
-                <h3 class="text-3xl font-bold text-slate-900" id="stat-tickets">0</h3>
+                <span class="material-icons-round text-blue-600 mb-2">confirmation_number</span>
+                <p class="text-slate-400 text-xs font-bold uppercase">Active Tickets</p>
+                <h3 class="text-3xl font-black text-slate-900" id="stat-tickets">0</h3>
             </div>
-
+            <!-- Card 2: Resolved -->
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 mb-4">
-                    <span class="material-icons-round">group</span>
-                </div>
-                <p class="text-slate-500 text-sm font-medium uppercase tracking-wider">Active Users</p>
-                <h3 class="text-3xl font-bold text-slate-900" id="stat-users">0</h3>
+                <span class="material-icons-round text-emerald-600 mb-2">check_circle</span>
+                <p class="text-slate-400 text-xs font-bold uppercase">Resolved</p>
+                <h3 class="text-3xl font-black text-slate-900" id="stat-resolved">0</h3>
             </div>
-
+            <!-- Card 3: Users -->
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <div class="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600 mb-4">
-                    <span class="material-icons-round">bolt</span>
-                </div>
-                <p class="text-slate-500 text-sm font-medium uppercase tracking-wider">Avg Response</p>
-                <h3 class="text-3xl font-bold text-slate-900">2.4h</h3>
+                <span class="material-icons-round text-purple-600 mb-2">group</span>
+                <p class="text-slate-400 text-xs font-bold uppercase">Users</p>
+                <h3 class="text-3xl font-black text-slate-900" id="stat-users">0</h3>
+            </div>
+            <!-- Card 4: Rating -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <span class="material-icons-round text-amber-500 mb-2">stars</span>
+                <p class="text-slate-400 text-xs font-bold uppercase">Avg Rating</p>
+                <h3 class="text-3xl font-black text-slate-900" id="stat-rating">0.0</h3>
             </div>
         </div>
     </main>

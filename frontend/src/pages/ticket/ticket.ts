@@ -2,6 +2,7 @@ import { initSidebar } from '../../components/sidebar';
 import { ticketService } from '../../services/api/ticket.service';
 import { userService } from '../../services/api/user.service';
 import { Ticket } from '../../interfaces/ticket.interface';
+import { Modal } from '../../utils/modal';
 
 // --- MODAL LOGIC ---
 (window as any).openTicketModal = async (ticket?: Ticket) => {
@@ -30,11 +31,18 @@ import { Ticket } from '../../interfaces/ticket.interface';
 
 (window as any).closeTicketModal = () => document.getElementById('ticket-modal')?.classList.add('hidden');
 
-(window as any).deleteTicket = async (id: string) => {
-    if (confirm('Delete ticket?')) {
-        await ticketService.deleteTicket(id);
-        loadPage();
-    }
+(window as any).deleteTicket = (id: string) => {
+    Modal.confirm({
+        title: 'Delete Ticket?',
+        message: 'This action cannot be undone. The ticket will be moved to the archive.',
+        type: 'warning',
+        confirmText: 'Yes, Delete',
+        onConfirm: async () => {
+            await ticketService.deleteTicket(id);
+            loadPage();
+            Modal.show({ title: 'Deleted', message: 'User removed successfully.', type: 'success' });
+        }
+    });
 };
 
 // --- RENDERING ---
