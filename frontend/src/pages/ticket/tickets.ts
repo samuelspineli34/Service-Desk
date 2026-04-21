@@ -106,7 +106,7 @@ async function openTicketModal(ticket?: Ticket) {
         (document.getElementById('modal-title')!).textContent = 'New Ticket';
         (document.getElementById('ticket-form') as HTMLFormElement).reset();
         (document.getElementById('field-id') as HTMLInputElement).value = '';
-        
+
         statusField.value = 'OPEN';
         auditSection?.classList.add('hidden');
         resContainer?.classList.add('hidden');
@@ -176,26 +176,26 @@ async function loadPage() {
                     <td class="px-8 py-8 align-top">
                         <span class="px-3 py-1.5 rounded-lg text-[10px] font-black border-2 uppercase tracking-tighter
                             ${t.status === 'CLOSED' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' :
-                            t.status === 'IN_PROGRESS' ? 'bg-orange-50 text-[#d97706] border-orange-100' :
-                                'bg-blue-50 text-blue-700 border-blue-100'}">
+                    t.status === 'IN_PROGRESS' ? 'bg-orange-50 text-[#d97706] border-orange-100' :
+                        'bg-blue-50 text-blue-700 border-blue-100'}">
                             ${t.status.replace('_', ' ')}
                         </span>
                     </td>
                     <td class="px-8 py-8 align-top">
                         <span class="px-3 py-1.5 rounded-lg text-[10px] font-black border-2 uppercase tracking-tighter
                             ${t.priority === 'HIGH' ? 'bg-red-50 text-red-700 border-red-100' :
-                            t.priority === 'MEDIUM' ? 'bg-orange-50 text-[#d97706] border-orange-100' :
-                                'bg-slate-50 text-slate-600 border-slate-200'}">
+                    t.priority === 'MEDIUM' ? 'bg-orange-50 text-[#d97706] border-orange-100' :
+                        'bg-slate-50 text-slate-600 border-slate-200'}">
                             ${t.priority}
                         </span>
                     </td>
                     <td class="px-8 py-8 align-top">
                         ${t.rating
-                            ? `<div class="flex text-[#d97706] gap-0.5">${'★'.repeat(t.rating)}</div>`
-                            : canRate
-                                ? `<button data-rate-id="${t.id}" class="px-4 py-2 bg-orange-100 text-[#d97706] border-2 border-orange-200 rounded-xl text-[9px] font-black hover:bg-[#d97706] hover:text-white transition-all uppercase tracking-widest">Rate Now</button>`
-                                : `<span class="text-orange-200 text-[9px] font-black uppercase tracking-widest italic">Pending</span>`
-                        }
+                    ? `<div class="flex text-[#d97706] gap-0.5">${'★'.repeat(t.rating)}</div>`
+                    : canRate
+                        ? `<button data-rate-id="${t.id}" class="px-4 py-2 bg-orange-100 text-[#d97706] border-2 border-orange-200 rounded-xl text-[9px] font-black hover:bg-[#d97706] hover:text-white transition-all uppercase tracking-widest">Rate Now</button>`
+                        : `<span class="text-orange-200 text-[9px] font-black uppercase tracking-widest italic">Pending</span>`
+                }
                     </td>
                     <td class="px-8 py-8 align-top text-xs text-[#6b4423] font-black uppercase tracking-tighter">${t.user_name}</td>
                     <td class="px-8 py-8 align-top text-right">
@@ -279,6 +279,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('ticket-form')?.addEventListener('submit', async (e) => {
         e.preventDefault();
+        const form = e.target as HTMLFormElement;
+        const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+
         const id = (document.getElementById('field-id') as HTMLInputElement).value;
         const data = {
             title: (document.getElementById('field-title') as HTMLInputElement).value,
@@ -290,12 +293,21 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            showLoader();
+
             id ? await ticketService.updateTicket(id, data) : await ticketService.createTicket(data);
+
             document.getElementById('ticket-modal')?.classList.add('hidden');
             loadPage();
             Modal.show({ title: 'Success', message: 'Ticket saved.', type: 'success' });
         } catch (err) {
             Modal.show({ title: 'Error', message: 'Could not save.', type: 'error' });
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            hideLoader();
         }
     });
 

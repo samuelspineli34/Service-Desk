@@ -4,8 +4,11 @@ import { showLoader, hideLoader } from '../../utils/loaders';
 
 document.getElementById('login-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    const submitBtn = (e.target as HTMLFormElement).querySelector('button[type="submit"]') as HTMLButtonElement;
     
     try {
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
         showLoader(); 
 
         // Agora, se os elementos não existirem, ele cai no CATCH e esconde o loader!
@@ -18,7 +21,7 @@ document.getElementById('login-form')?.addEventListener('submit', async (e) => {
 
         const email = emailInput.value;
         const password = passwordInput.value;
-        
+
         const rememberMe = (document.getElementById('remember') as HTMLInputElement)?.checked;
         if (rememberMe) {
             localStorage.setItem('savedEmail', email);
@@ -43,6 +46,8 @@ document.getElementById('login-form')?.addEventListener('submit', async (e) => {
 
     } catch (err: any) {
         hideLoader(); // Esconde o loader IMEDIATAMENTE
+        submitBtn.disabled = false; // Reativa apenas se der erro
+        submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
         
         console.error("Erro capturado:", err); // <-- Isso vai te mostrar o erro real no F12
 

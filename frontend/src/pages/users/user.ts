@@ -5,7 +5,7 @@ import { Modal } from '../../utils/modal';
 import { protectRoute } from '../../utils/auth-guard';
 import { showLoader, hideLoader } from '../../utils/loaders';
 
-protectRoute(); 
+protectRoute();
 
 // 1. Funções globais para o Modal
 (window as any).openUserModal = (user?: User) => {
@@ -47,7 +47,7 @@ protectRoute();
 
 const renderUserItem = (user: User): string => {
     const userJson = JSON.stringify(user).replace(/'/g, "&apos;");
-    
+
     return `
         <li class="flex items-center justify-between p-6 bg-white hover:bg-orange-50/30 transition-all group">
             <div class="flex items-center gap-6">
@@ -97,10 +97,12 @@ async function initPage() {
 
 document.addEventListener('DOMContentLoaded', () => {
     initPage();
-    
+
     const form = document.getElementById('user-form') as HTMLFormElement;
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
+        const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+
         const id = (document.getElementById('field-id') as HTMLInputElement).value;
         const data = {
             name: (document.getElementById('field-name') as HTMLInputElement).value,
@@ -109,16 +111,25 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            showLoader();
+
             if (id) {
                 await userService.updateUser(id, data);
             } else {
                 await userService.createUser(data);
             }
+
             (window as any).closeUserModal();
             initPage();
             Modal.show({ title: 'Success', message: 'Staff records updated.', type: 'success' });
         } catch (err) {
             Modal.show({ title: 'Error', message: 'Could not save member.', type: 'error' });
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            hideLoader();
         }
     });
 });

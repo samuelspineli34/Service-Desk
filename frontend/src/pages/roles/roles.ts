@@ -98,6 +98,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('role-form')?.addEventListener('submit', async (e) => {
         e.preventDefault();
+        const form = e.target as HTMLFormElement;
+        const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
         const id = (document.getElementById('field-role-id') as HTMLInputElement).value;
         const checkboxes = document.querySelectorAll('input[name="permissions"]:checked');
         const selectedPermissions = Array.from(checkboxes).map((cb: any) => cb.value);
@@ -108,12 +110,21 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            showLoader();
+
             id ? await apiClient.put(`/roles/${id}`, data) : await apiClient.post('/roles', data);
+
             closeRoleModal();
             loadRoles();
             Modal.show({ title: 'System Updated', message: 'The authority was saved.', type: 'success' });
         } catch (err) {
             Modal.show({ title: 'Error', message: 'Failed to save role.', type: 'error' });
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            hideLoader();
         }
     });
 });
