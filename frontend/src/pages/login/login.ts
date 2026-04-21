@@ -20,3 +20,14 @@ document.getElementById('login-form')?.addEventListener('submit', async (e) => {
         });
     }
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const emailInput = document.getElementById('email') as HTMLInputElement;
+    const savedEmail = localStorage.getItem('savedEmail');
+    
+    if (savedEmail) {
+        emailInput.value = savedEmail;
+        // Opcional: marca o checkbox como checked
+        (document.getElementById('remember-me') as HTMLInputElement).checked = true;
+    }
+});
