@@ -7,4 +7,5 @@ export interface Ticket {
     user_id: string;
     user_name: string;
     created_at: string;
+    rating?: number;
 }

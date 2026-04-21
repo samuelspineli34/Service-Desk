@@ -22,12 +22,17 @@ class UserService:
         return user_dto.to_dict() if user_dto else None
         
     def authenticate(self, email, password):
-        user_dto = self.dao.get_by_email(email)
-        if user_dto and check_password_hash(user_dto.password_hash, password):
-            # Gera o token incluindo o papel (role) do usuário
-            access_token = create_access_token(identity=user_dto.id, additional_claims={"role": user_dto.role})
-            return {"token": access_token, "user": user_dto.to_dict()}
-        return None
+        user_data = self.dao.get_by_email_with_permissions(email)
+        if user_data and check_password_hash(user_data['password_hash'], password):
+            # O Token agora carrega as permissões REAIS do cargo dele
+            access_token = create_access_token(
+                identity=user_data['id'], 
+                additional_claims={
+                    "role": user_data['role_name'],
+                    "permissions": user_data['permissions'] # ['manage_users', 'view_all_tickets']
+                }
+            )
+            return {"token": access_token, "user": user_data['info']}
 
     def create_user(self, data):
         # Se não vier senha no form, usa a padrão: Welcome@123

@@ -15,8 +15,9 @@ export default defineConfig({
           if (url === '/login') req.url = '/src/pages/login/login.html';
           else if (url === '/dashboard') req.url = '/src/pages/dashboard/dashboard.html';
           else if (url === '/users') req.url = '/src/pages/users/user.html';
-          else if (url === '/ticket') req.url = '/src/pages/ticket/ticket.html';
+          else if (url === '/tickets') req.url = '/src/pages/ticket/tickets.html';
           else if (url === '/profile') req.url = '/src/pages/profile/profile.html';
+          else if (url === '/roles') req.url = '/src/pages/roles/roles.html';
           
           next();
         });
@@ -39,7 +40,9 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         dashboard: resolve(__dirname, 'src/pages/dashboard/dashboard.html'),
         users: resolve(__dirname, 'src/pages/users/user.html'),
-        ticket: resolve(__dirname, 'src/pages/ticket/ticket.html'),
+        tickets: resolve(__dirname, 'src/pages/ticket/tickets.html'),
+        profile: resolve(__dirname, 'src/pages/profile/profile.html'),
+        roles: resolve(__dirname, 'src/pages/roles/roles.html'),
       },
     },
   },

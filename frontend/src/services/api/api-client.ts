@@ -12,14 +12,18 @@ const getHeaders = (): HeadersInit => {
 };
 
 const handleResponse = async (response: Response) => {
+    // SÓ desloga se o token for inválido (401)
     if (response.status === 401) {
         localStorage.clear();
         window.location.href = '/login';
-        throw new Error('Session expired. Please login again.');
+        throw new Error('Session expired');
     }
+    
+    // Se for 404 ou 500, o erro aparece no console mas NÃO te desloga
     if (!response.ok) {
+        console.error(`Erro na API (${response.status}):`, response.statusText);
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || `API Error: ${response.statusText}`);
+        throw new Error(errorData.error || 'Server error');
     }
     return await response.json();
 };

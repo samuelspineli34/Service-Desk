@@ -11,6 +11,7 @@ from routes.user_routes import user_bp
 from routes.ticket_routes import ticket_bp
 from routes.auth_routes import auth_bp
 from routes.dashboard_routes import dash_bp
+from routes.role_routes import role_bp
 
 # Import da sua classe de configuração
 from config.config import Config
@@ -31,6 +32,7 @@ app.register_blueprint(user_bp, url_prefix='/api')
 app.register_blueprint(ticket_bp, url_prefix='/api')
 app.register_blueprint(auth_bp, url_prefix='/api')
 app.register_blueprint(dash_bp, url_prefix='/api') 
+app.register_blueprint(role_bp, url_prefix='/api')
 
 
 # Rota de teste simples para verificar se o servidor está de pé

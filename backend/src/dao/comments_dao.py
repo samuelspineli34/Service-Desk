@@ -1,5 +1,5 @@
 import psycopg2
-from config import Config
+from config.config import Config
 
 class CommentDAO:
     def get_connection(self):

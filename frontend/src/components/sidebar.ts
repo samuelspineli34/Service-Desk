@@ -1,12 +1,24 @@
 export function initSidebar() {
     const userJson = localStorage.getItem('user');
-    const user = userJson ? JSON.parse(userJson) : null;
-    const role = user?.role || 'USER';
-    const userName = user?.name || 'Guest User';
+    
+    // 1. VERIFICAÇÃO DE SEGURANÇA:
+    // Se não existir usuário no storage, manda de volta pro login imediatamente
+    if (!userJson) {
+        console.warn("Sessão não encontrada. Redirecionando...");
+        window.location.href = '/login';
+        return;
+    }
+
+    const user = JSON.parse(userJson);
+    
+    // 2. USO SEGURO (Optional Chaining):
+    // Usamos o ?. para garantir que se algo estiver faltando no objeto, o código não trave
+    const permissions: string[] = user?.permissions || [];
+    const hasPermission = (p: string) => permissions.includes(p) || user?.role === 'ADMIN';
 
     const sidebarHtml = `
-    <aside class="flex flex-col w-64 h-screen px-5 py-8 overflow-y-auto bg-slate-900 border-r border-slate-700 fixed left-0 top-0">
-        <div class="flex items-center gap-x-3 px-2">
+    <aside class="flex flex-col w-64 h-screen px-5 py-8 overflow-y-auto bg-slate-900 border-r border-slate-700 fixed left-0 top-0 z-50">
+        <div class="flex items-center gap-3 px-4">
             <span class="bg-white rounded-xl flex items-center justify-center">
                 <img src="/agent.png" alt="Agent" class="w-12 h-12">
             </span>
@@ -14,34 +26,39 @@ export function initSidebar() {
         </div>
 
         <nav class="flex-1 mt-10 space-y-2">
-            <a href="/dashboard" class="nav-link flex items-center px-3 py-2 text-slate-300 transition-colors duration-200 rounded-lg hover:bg-slate-800 hover:text-white group">
+            <a href="/dashboard" class="nav-link flex items-center px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white transition-all rounded-2xl group">
                 <span class="material-icons-round">dashboard</span>
-                <span class="mx-3 font-medium">Dashboard</span>
+                <span class="mx-3 font-bold text-sm">Dashboard</span>
             </a>
 
-            ${role === 'ADMIN' ? `
-            <a href="/users" class="nav-link flex items-center px-3 py-2 text-slate-300 transition-colors duration-200 rounded-lg hover:bg-slate-800 hover:text-white group">
+            ${hasPermission('manage_users') ? `
+            <a href="/users" class="nav-link flex items-center px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white transition-all rounded-2xl group">
                 <span class="material-icons-round">group</span>
-                <span class="mx-3 font-medium">Users</span>
-            </a> ` : ''}
+                <span class="mx-3 font-bold text-sm">Users</span>
+            </a>` : ''}
 
-            <a href="/ticket" class="nav-link flex items-center px-3 py-2 text-slate-300 transition-colors duration-200 rounded-lg hover:bg-slate-800 hover:text-white group">
+            ${hasPermission('manage_roles') ? `
+            <a href="/roles" class="nav-link flex items-center px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white transition-all rounded-2xl group">
+                <span class="material-icons-round">admin_panel_settings</span>
+                <span class="mx-3 font-bold text-sm">Roles & Permissions</span>
+            </a>` : ''}
+
+            <a href="/tickets" class="nav-link flex items-center px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white transition-all rounded-2xl group">
                 <span class="material-icons-round">confirmation_number</span>
-                <span class="mx-3 font-medium">Tickets</span>
+                <span class="mx-3 font-bold text-sm">Tickets</span>
             </a>
         </nav>
 
-        <div class="flex items-center gap-x-2 px-2 mt-auto border-t border-slate-800 pt-6 text-white">
-            <a href="/profile">
-                <img class="w-9 h-9 rounded-full ring-2 ring-blue-500/20" src="https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=0D8ABC&color=fff">
-            </a>    
-            <div class="text-left leading-tight">
-                <h1 class="text-sm font-semibold truncate w-32">${userName}</h1>
-                <p class="text-[10px] text-slate-400 font-bold uppercase">${role}</p>
-            </div>
-            <!-- Botão de Logout -->
-            <button onclick="localStorage.clear(); window.location.href='/login'" class="ml-auto text-slate-500 hover:text-red-500 transition-colors">
-                <span class="material-icons-round text-sm">logout</span>
+        <div class="mt-auto border-t border-slate-800 pt-6">
+            <a href="/profile" class="flex items-center gap-x-3 px-2 group">
+                <img class="w-10 h-10 rounded-xl ring-2 ring-blue-500/20" src="https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=2563eb&color=fff">
+                <div class="text-left leading-tight overflow-hidden">
+                    <h1 class="text-sm font-bold text-white truncate">${user?.name || 'Guest'}</h1>
+                    <p class="text-[10px] text-slate-500 font-black uppercase tracking-widest">${user?.role || 'USER'}</p>
+                </div>
+            </a>
+            <button onclick="localStorage.clear(); window.location.href='/login'" class="mt-4 w-full flex items-center justify-center gap-2 py-2 text-xs font-bold text-slate-500 hover:text-red-400 transition-colors">
+                <span class="material-icons-round text-sm">logout</span> Sign Out
             </button>
         </div>
     </aside>

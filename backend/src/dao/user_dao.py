@@ -80,6 +80,51 @@ class UserDAO:
         cursor.close()
         conn.close()
         return user
+
+    def get_by_email_with_permissions(self, email):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        
+        # Esta query busca o usuário e faz o JOIN com Roles e Permissions
+        query = """
+            SELECT 
+                u.id, u.name, u.email, u.department, u.password_hash, 
+                r.name as role_name, 
+                p.code as permission_code
+            FROM users u
+            LEFT JOIN roles r ON u.role_id = r.id
+            LEFT JOIN role_permissions rp ON r.id = rp.role_id
+            LEFT JOIN permissions p ON rp.permission_id = p.id
+            WHERE u.email = %s AND u.deleted_at IS NULL
+        """
+        cursor.execute(query, (email,))
+        rows = cursor.fetchall()
+        
+        if not rows:
+            return None
+
+        # Como a query retorna uma linha por permissão, agrupamos as permissões em uma lista
+        permissions = [row[6] for row in rows if row[6] is not None]
+        first_row = rows[0]
+
+        user_data = {
+            "id": str(first_row[0]),
+            "password_hash": first_row[4],
+            "role_name": first_row[5] or "USER",
+            "permissions": permissions,
+            "info": {
+                "id": str(first_row[0]),
+                "name": first_row[1],
+                "email": first_row[2],
+                "department": first_row[3],
+                "role": first_row[5] or "USER",
+                "permissions": permissions
+            }
+        }
+        
+        cursor.close()
+        conn.close()
+        return user_data
     
     def update_password(self, user_id, new_hash):
         conn = self.get_connection()
