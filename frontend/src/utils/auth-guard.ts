@@ -2,12 +2,18 @@
 import { authService } from '../services/api/auth.service';
 
 export const protectRoute = () => {
-    // Se não estiver autenticado e não estiver na página de login, manda pro login
-    if (!authService.isAuthenticated() && window.location.pathname !== '/login') {
+    const isAuthenticated = authService.isAuthenticated();
+    const isLoginPage = window.location.pathname.includes('login');
+
+    // Se não estiver logado e tentar acessar algo que não seja login -> Vai pro login
+    if (!isAuthenticated && !isLoginPage) {
         window.location.href = '/login';
+        return;
     } 
-    // Se estiver autenticado e estiver na página de login, manda pro dashboard
-    else if (authService.isAuthenticated() && window.location.pathname === '/login') {
+
+    // Se já estiver logado e tentar entrar no login -> Vai pro dashboard
+    if (isAuthenticated && isLoginPage) {
         window.location.href = '/dashboard';
+        return;
     }
 };

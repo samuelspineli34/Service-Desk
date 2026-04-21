@@ -1,4 +1,7 @@
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const envUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
+// Garantimos que a BASE_URL sempre termine com /api
+const BASE_URL = envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`;
 
 const getHeaders = (): HeadersInit => {
     const token = localStorage.getItem('token');

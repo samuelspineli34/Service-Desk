@@ -23,7 +23,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 app = Flask(__name__)
 
 # Configuração do CORS para permitir o Bun/Vite acessar o Flask
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 @app.before_request
 def handle_options():
