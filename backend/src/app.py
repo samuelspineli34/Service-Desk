@@ -23,7 +23,11 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 app = Flask(__name__)
 
 # Configuração do CORS para permitir o Bun/Vite acessar o Flask
-CORS(app) 
+CORS(app, resources={r"/api/*": {
+    "origins": ["https://osakatech.vercel.app", "https://service-desk-green-five.vercel.app"],
+    "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    "allow_headers": ["Content-Type", "Authorization"]
+}})
 
 # --- CONFIGURAÇÃO JWT ---
 # Agora pegamos a chave de forma segura através da sua classe Config
