@@ -4,6 +4,19 @@ O **Osaka Tech** é uma solução completa para gerenciamento de chamados técni
 
 ---
 
+## Demo Live
+Acesse o sistema em: [https://osakatech.vercel.app](https://osakatech.vercel.app)
+
+### Credenciais de Teste
+Para explorar as diferentes permissões do sistema (RBAC), utilize as contas abaixo (Senha padrão: `teste123`):
+
+| Cargo | Email | Permissões |
+| :--- | :--- | :--- |
+| **Admin** | admin@osakacorp.com | Acesso total, gestão de usuários e cargos. |
+| **Técnico** | tech@osakacorp.com | Gerenciamento e resolução de chamados. |
+| **Usuário** | user@osakacorp.com | Abertura e acompanhamento de chamados próprios. |
+
+
 # Funcionalidades Principais
 
 ### Gerenciamento de Usuários (CRUD)
