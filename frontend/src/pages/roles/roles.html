@@ -3,69 +3,82 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Roles & Permissions | ServiceDesk</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roles & Permissions | Osaka Tech</title>
     <script type="module" src="/src/pages/roles/roles.ts"></script>
+    <script type="module" src="/src/style/global.css"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: transparent !important; }
+        .animate-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
 
-<body class="bg-slate-50 min-h-screen">
-    <!-- Loader Global -->
-    <!-- Loader Global (Com a classe 'hidden' adicionada) -->
-<div id="global-loader" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm">
-  <div class="relative">
-    <div class="h-12 w-12 rounded-full border-4 border-slate-200 border-t-blue-600 animate-spin"></div>
-  </div>
-</div>
+<body class="min-h-screen text-[#2d1a0f] antialiased">
+    <!-- Loader Temático -->
+    <div id="global-loader" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-[#fdfaf3]/90 backdrop-blur-sm">
+        <div class="h-10 w-10 rounded-full border-4 border-orange-200 border-t-[#d97706] animate-spin"></div>
+    </div>
+
     <div id="sidebar-container"></div>
 
-    <main class="ml-64 p-10 max-w-6xl">
-        <header class="mb-10 flex justify-between items-end">
+    <main class="ml-64 p-12 max-w-6xl animate-in">
+        <header class="mb-12 flex justify-between items-end">
             <div>
-                <h1 class="text-4xl font-black text-slate-900 tracking-tight">Roles & Permissions</h1>
-                <p class="text-slate-500 font-medium">Define access levels and system capabilities.</p>
+                <span class="text-[10px] font-black text-[#d97706] uppercase tracking-[0.3em] ml-1">Access Control</span>
+                <h1 class="text-4xl font-[900] text-[#2d1a0f] tracking-tighter mt-1">Roles & Permissions</h1>
+                <p class="text-[#6b4423]/60 font-medium mt-2">Define access levels and system capabilities.</p>
             </div>
             <button onclick="window.openRoleModal()"
-                class="bg-blue-600 text-white px-6 py-3 rounded-2xl font-bold shadow-xl shadow-blue-500/20 hover:bg-blue-700 transition-all flex items-center gap-2">
-                <span class="material-icons-round">add_moderator</span> Create New Role
+                class="bg-[#d97706] text-white px-8 py-4 rounded-[1.5rem] font-black shadow-2xl shadow-orange-900/20 hover:bg-[#b45309] hover:-translate-y-0.5 active:scale-95 transition-all flex items-center gap-2 uppercase text-xs tracking-widest">
+                <span class="material-icons-round text-sm">add_moderator</span> Create New Role
             </button>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="roles-grid">
-            <!-- Roles cards will be injected here -->
+        <!-- Grid de Cards (Injetados via TS) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="roles-grid">
+            <!-- Os cards injetados via JS devem seguir a classe .osaka-card do seu global.css -->
         </div>
     </main>
 
     <!-- ROLE MODAL -->
     <div id="role-modal"
-        class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
-        <div class="bg-white w-full max-w-xl rounded-[2.5rem] shadow-2xl p-10 overflow-hidden">
-            <h2 id="modal-title" class="text-2xl font-black text-slate-800 mb-2 text-center">Configure Role</h2>
-            <p class="text-slate-400 text-center text-sm mb-8 font-medium">Define a name and select permissions.</p>
+        class="hidden fixed inset-0 bg-[#2d1a0f]/60 backdrop-blur-md flex items-center justify-center z-[100] p-4">
+        <div class="bg-white w-full max-w-xl rounded-[3.5rem] shadow-[0_32px_64px_-12px_rgba(69,26,3,0.3)] p-12 border-2 border-orange-100 overflow-hidden animate-in">
+            <div class="text-center mb-10">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-orange-50 rounded-[1.5rem] text-[#d97706] mb-4 border-2 border-orange-100">
+                    <span class="material-icons-round text-3xl">admin_panel_settings</span>
+                </div>
+                <h2 id="modal-title" class="text-3xl font-[900] text-[#2d1a0f] tracking-tight">Configure Role</h2>
+                <p class="text-[#6b4423]/60 text-sm mt-1 font-medium">Define a name and select system capabilities.</p>
+            </div>
 
-            <form id="role-form" class="space-y-6">
+            <form id="role-form" class="space-y-8">
                 <input type="hidden" id="field-role-id">
-                <div class="space-y-1.5">
-                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Role Display
-                        Name</label>
+                
+                <div class="space-y-2">
+                    <label class="text-[11px] font-black uppercase tracking-[0.15em] text-[#451a03] ml-1">Role Display Name</label>
                     <input type="text" id="field-role-name" placeholder="e.g. Senior Technician" required
-                        class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all font-bold">
+                        class="w-full p-5 bg-white border-2 border-orange-100 rounded-2xl outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-[#d97706] transition-all font-bold text-[#2d1a0f] placeholder:text-orange-200/50">
                 </div>
 
                 <div class="space-y-4">
-                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">System
-                        Capabilities</label>
-                    <div class="grid grid-cols-1 gap-3 max-h-60 overflow-y-auto pr-2" id="permissions-list">
-                        <!-- Checkboxes will be injected here -->
+                    <label class="text-[11px] font-black uppercase tracking-[0.15em] text-[#451a03] ml-1">System Capabilities</label>
+                    <!-- Container de permissões com scroll customizado (do seu global.css) -->
+                    <div class="grid grid-cols-1 gap-3 max-h-64 overflow-y-auto pr-3 custom-scrollbar" id="permissions-list">
+                        <!-- Checkboxes injetados pelo TS: Garanta que usem border-2 e bg-white -->
                     </div>
                 </div>
 
                 <div class="flex gap-4 pt-4">
                     <button type="button" onclick="window.closeRoleModal()"
-                        class="flex-1 py-4 font-bold text-slate-400 hover:text-slate-600">Cancel</button>
+                        class="flex-1 py-5 font-black text-[#6b4423]/40 hover:text-[#d97706] uppercase text-[10px] tracking-widest transition-colors">Cancel</button>
                     <button type="submit"
-                        class="flex-[2] bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-xl shadow-blue-500/20 hover:bg-blue-700 active:scale-95 transition-all">
-                        Save Role
+                        class="flex-[2] bg-[#1e130c] text-white font-black py-5 rounded-[1.5rem] shadow-xl hover:bg-black active:scale-95 transition-all uppercase text-[10px] tracking-[0.2em]">
+                        Save Authority
                     </button>
                 </div>
             </form>

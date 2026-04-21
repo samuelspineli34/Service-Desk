@@ -67,6 +67,8 @@ async function openTicketModal(ticket?: Ticket) {
     const userSelect = document.getElementById('field-user') as HTMLSelectElement;
     const auditSection = document.getElementById('audit-section'); // Seleciona a nova aba de log
     const historyContainer = document.getElementById('ticket-history-list');
+    const resContainer = document.getElementById('resolution-container');
+    const resField = document.getElementById('field-resolution') as HTMLTextAreaElement;
 
     // Mostra o loader interno se necessário ou limpa o histórico anterior
     if (historyContainer) historyContainer.innerHTML = '<div class="p-10 text-center text-slate-400 text-xs">Loading history...</div>';
@@ -83,6 +85,14 @@ async function openTicketModal(ticket?: Ticket) {
         (document.getElementById('field-status') as HTMLSelectElement).value = ticket.status;
         (document.getElementById('field-priority') as HTMLSelectElement).value = ticket.priority;
         userSelect.value = ticket.user_id;
+        resField.value = ticket.resolution || '';
+
+        // Se já estiver fechado, mostra a resolução
+        if (ticket.status === 'CLOSED') {
+            resContainer?.classList.remove('hidden');
+        } else {
+            resContainer?.classList.add('hidden');
+        }
 
         // --- Lógica da Auditoria ---
         auditSection?.classList.remove('hidden'); // Mostra a coluna da direita
@@ -92,9 +102,9 @@ async function openTicketModal(ticket?: Ticket) {
         (document.getElementById('modal-title')!).textContent = 'New Ticket';
         (document.getElementById('ticket-form') as HTMLFormElement).reset();
         (document.getElementById('field-id') as HTMLInputElement).value = '';
-        
+
         auditSection?.classList.add('hidden'); // Esconde a coluna da direita em tickets novos
-        
+
         if (!isStaff) {
             userSelect.value = currentUser?.id || '';
             const container = document.getElementById('user-assign-container');
@@ -126,7 +136,7 @@ function deleteTicket(id: string) {
 async function loadPage() {
     showLoader();
     initSidebar();
-    
+
     const list = document.getElementById('ticket-list');
     if (!list) return;
 
@@ -136,49 +146,67 @@ async function loadPage() {
         list.innerHTML = tickets.map(t => {
             const canRate = t.status === 'CLOSED' && !t.rating && t.user_id === currentUser?.id;
 
+            // Bloco de Resolução com Alto Contraste
+            const resolutionHtml = t.resolution ? `
+                <div class="mt-4 p-4 bg-orange-50/50 rounded-2xl border-2 border-orange-100 max-w-md animate-in">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="material-icons-round text-[16px] text-[#d97706]">verified</span>
+                        <span class="text-[9px] font-black text-[#d97706] uppercase tracking-[0.2em]">Official Resolution</span>
+                    </div>
+                    <p class="text-xs text-[#2d1a0f] leading-relaxed font-bold italic">"${t.resolution}"</p>
+                </div>
+            ` : '';
+
             return `
-                <tr class="hover:bg-slate-50/50 transition-colors border-b border-slate-100">
-                    <td class="px-8 py-6">
-                        <p class="font-bold text-slate-800">${t.title}</p>
-                        <p class="text-[10px] text-slate-400 font-mono uppercase">${t.id.substring(0, 8)}</p>
+                <tr class="hover:bg-white transition-colors group">
+                    <td class="px-8 py-8 align-top">
+                        <div class="flex flex-col">
+                            <p class="font-black text-[#2d1a0f] text-base tracking-tight">${t.title}</p>
+                            <p class="text-[10px] text-orange-300 font-bold uppercase mt-1 tracking-widest">${t.id.substring(0, 8)}</p>
+                            ${resolutionHtml}
+                        </div>
                     </td>
-                    <td class="px-8 py-6">
-                        <span class="px-3 py-1 rounded-lg text-[10px] font-black border uppercase 
-                            ${t.status === 'CLOSED' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
-                    t.status === 'IN_PROGRESS' ? 'bg-amber-50 text-amber-600 border-amber-100' :
-                        'bg-blue-50 text-blue-600 border-blue-100'}">
+                    <td class="px-8 py-8 align-top">
+                        <span class="px-3 py-1.5 rounded-lg text-[10px] font-black border-2 uppercase tracking-tighter
+                            ${t.status === 'CLOSED' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' :
+                            t.status === 'IN_PROGRESS' ? 'bg-orange-50 text-[#d97706] border-orange-100' :
+                                'bg-blue-50 text-blue-700 border-blue-100'}">
                             ${t.status.replace('_', ' ')}
                         </span>
                     </td>
-                    <td class="px-8 py-6">
-                        <span class="px-3 py-1 rounded-lg text-[10px] font-black border uppercase 
-                            ${t.priority === 'HIGH' ? 'bg-red-50 text-red-600 border-red-100' :
-                    t.priority === 'MEDIUM' ? 'bg-amber-50 text-amber-600 border-amber-100' :
-                        'bg-slate-100 text-slate-500 border-slate-200'}">
+                    <td class="px-8 py-8 align-top">
+                        <span class="px-3 py-1.5 rounded-lg text-[10px] font-black border-2 uppercase tracking-tighter
+                            ${t.priority === 'HIGH' ? 'bg-red-50 text-red-700 border-red-100' :
+                            t.priority === 'MEDIUM' ? 'bg-orange-50 text-[#d97706] border-orange-100' :
+                                'bg-slate-50 text-slate-600 border-slate-200'}">
                             ${t.priority}
                         </span>
                     </td>
-                    <td class="px-8 py-6">
+                    <td class="px-8 py-8 align-top">
                         ${t.rating
-                    ? `<div class="flex text-amber-400 text-xs">${'★'.repeat(t.rating)}</div>`
-                    : canRate
-                        ? `<button data-rate-id="${t.id}" class="px-3 py-1 bg-amber-50 text-amber-600 border border-amber-200 rounded-lg text-[10px] font-black hover:bg-amber-100 transition-all uppercase tracking-tighter">Rate Service</button>`
-                        : `<span class="text-slate-300 text-[10px] font-bold uppercase italic">Pending</span>`
-                }
+                            ? `<div class="flex text-[#d97706] gap-0.5">${'★'.repeat(t.rating)}</div>`
+                            : canRate
+                                ? `<button data-rate-id="${t.id}" class="px-4 py-2 bg-orange-100 text-[#d97706] border-2 border-orange-200 rounded-xl text-[9px] font-black hover:bg-[#d97706] hover:text-white transition-all uppercase tracking-widest">Rate Now</button>`
+                                : `<span class="text-orange-200 text-[9px] font-black uppercase tracking-widest italic">Pending</span>`
+                        }
                     </td>
-                    <td class="px-8 py-6 text-sm text-slate-600 font-bold">${t.user_name}</td>
-                    <td class="px-8 py-6 text-right">
-                        <div class="flex justify-end gap-2">
+                    <td class="px-8 py-8 align-top text-xs text-[#6b4423] font-black uppercase tracking-tighter">${t.user_name}</td>
+                    <td class="px-8 py-8 align-top text-right">
+                        <div class="flex justify-end gap-3">
                             ${isStaff ? `
-                                <button data-edit-id='${JSON.stringify(t)}' class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all"><span class="material-icons-round text-sm">edit</span></button>
-                                <button data-delete-id='${t.id}' class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"><span class="material-icons-round text-sm">delete</span></button>
-                            ` : `<span class="text-slate-200 material-icons-round text-sm">lock</span>`}
+                                <button data-edit-id='${JSON.stringify(t)}' class="p-2.5 bg-white border-2 border-orange-50 text-orange-200 hover:text-[#d97706] hover:border-orange-100 rounded-2xl shadow-sm transition-all">
+                                    <span class="material-icons-round text-sm">edit</span>
+                                </button>
+                                <button data-delete-id='${t.id}' class="p-2.5 bg-white border-2 border-orange-50 text-orange-200 hover:text-red-500 hover:border-red-100 rounded-2xl shadow-sm transition-all">
+                                    <span class="material-icons-round text-sm">delete</span>
+                                </button>
+                            ` : `<span class="p-2 text-orange-100 material-icons-round text-sm">lock</span>`}
                         </div>
                     </td>
                 </tr>
             `;
         }).join('');
-
+        
         // ATIVAÇÃO DOS EVENTOS SEM ONCLICK (Delegação de Eventos)
 
         // Botões de Avaliar
@@ -217,7 +245,7 @@ async function loadTicketHistory(ticketId: string) {
 
     try {
         const history = await apiClient.get<any[]>(`/ticket/${ticketId}/history`);
-        
+
         container.innerHTML = history.map(log => {
             // Ícones dinâmicos conforme o tipo de alteração
             const icon = log.action.includes('STATUS') ? 'sync' : 'priority_high';
@@ -260,7 +288,8 @@ document.addEventListener('DOMContentLoaded', () => {
             description: (document.getElementById('field-desc') as HTMLTextAreaElement).value,
             status: (document.getElementById('field-status') as HTMLSelectElement).value as any,
             priority: (document.getElementById('field-priority') as HTMLSelectElement).value as any,
-            user_id: (document.getElementById('field-user') as HTMLSelectElement).value
+            user_id: (document.getElementById('field-user') as HTMLSelectElement).value,
+            resolution: (document.getElementById('field-resolution') as HTMLTextAreaElement).value
         };
 
         try {
@@ -272,4 +301,17 @@ document.addEventListener('DOMContentLoaded', () => {
             Modal.show({ title: 'Error', message: 'Could not save.', type: 'error' });
         }
     });
+
+
+    // Escutador para mudanças no Select de Status dentro do DOMContentLoaded
+    document.getElementById('field-status')?.addEventListener('change', (e) => {
+        const status = (e.target as HTMLSelectElement).value;
+        const resContainer = document.getElementById('resolution-container');
+        if (status === 'CLOSED') {
+            resContainer?.classList.remove('hidden');
+        } else {
+            resContainer?.classList.add('hidden');
+        }
+    });
+
 });

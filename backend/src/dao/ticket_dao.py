@@ -22,12 +22,11 @@ class TicketDAO:
         conn = self.get_connection()
         cursor = conn.cursor()
         
-        # Mudamos para LEFT JOIN: se o usuário der erro, o ticket ainda aparece
-        # Adicionamos t.rating na query para não dar erro de contagem de colunas
+        # Adicionado t.resolution no final da query
         query = """
             SELECT 
                 t.id, t.title, t.description, t.status, t.priority, 
-                t.user_id, COALESCE(u.name, 'Unknown User'), t.created_at, t.rating 
+                t.user_id, COALESCE(u.name, 'Unknown User'), t.created_at, t.rating, t.resolution 
             FROM tickets t 
             LEFT JOIN users u ON t.user_id = u.id 
             WHERE t.deleted_at IS NULL
@@ -41,6 +40,7 @@ class TicketDAO:
 
         rows = cursor.fetchall()
 
+        # O construtor do TicketDTO precisará aceitar 10 parâmetros agora
         tickets = [TicketDTO(*row) for row in rows]
         
         cursor.close()
@@ -50,7 +50,8 @@ class TicketDAO:
     def get_by_id(self, ticket_id):
         conn = self.get_connection()
         cursor = conn.cursor()
-        query = "SELECT id, title, description, status, priority, user_id, NULL, created_at, rating FROM tickets WHERE id = %s"
+        # Adicionado resolution no final da query e preenchido NULL para o nome do usuário
+        query = "SELECT id, title, description, status, priority, user_id, NULL, created_at, rating, resolution FROM tickets WHERE id = %s"
         cursor.execute(query, (ticket_id,))
         row = cursor.fetchone()
         cursor.close()
@@ -85,12 +86,21 @@ class TicketDAO:
     def update(self, ticket_id, data):
         conn = self.get_connection()
         cursor = conn.cursor()
+        # Adicionado resolution=%s antes de updated_at
         query = """
             UPDATE tickets 
-            SET title=%s, description=%s, status=%s, priority=%s, user_id=%s, updated_at=NOW() 
+            SET title=%s, description=%s, status=%s, priority=%s, user_id=%s, resolution=%s, updated_at=NOW() 
             WHERE id=%s AND deleted_at IS NULL
         """
-        cursor.execute(query, (data['title'], data['description'], data['status'], data['priority'], data['user_id'], ticket_id))
+        cursor.execute(query, (
+            data['title'], 
+            data['description'], 
+            data['status'], 
+            data['priority'], 
+            data['user_id'], 
+            data.get('resolution'), # Recupera a resolução enviada pelo frontend
+            ticket_id
+        ))
         conn.commit()
         cursor.close()
         conn.close()

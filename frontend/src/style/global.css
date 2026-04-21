@@ -1,22 +1,174 @@
-@keyframes zoomIn {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-}
-.animate-in.zoom-in-95 {
-    animation: zoomIn 0.2s ease-out forwards;
-}
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-.fade-in {
-    animation: fadeIn 0.2s ease-out forwards;
+/* Importação de fontes: Inter para dados técnicos e Quicksand para a estética "soft" */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Quicksand:wght@400;500;600;700&display=swap');
+
+:root {
+    /* Paleta Osaka - Versão de Alto Contraste */
+    --osaka-bg-solid: #fdfaf3;    /* Creme base */
+    --osaka-bg-overlay: rgba(253, 250, 243, 0.94); /* Overlay para suavizar o bg.png */
+    --osaka-card: #ffffff;        /* Branco puro para os cards se destacarem */
+    --osaka-text-main: #2d1a0f;   /* Marrom café escuro (substitui o preto) */
+    --osaka-text-sub: #6b4423;    /* Marrom médio para legendas */
+    --osaka-accent: #d97706;     /* Laranja queimado para destaques */
+    --osaka-border: #f1e4d1;     /* Borda tom areia */
+    --border-subtle: rgba(107, 68, 35, 0.08);
 }
 
-#global-loader {
-    transition: opacity 0.3s ease-out;
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
-.hidden {
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: #fdfaf3; /* Cor base */
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Criamos uma camada separada só para o fundo da Osaka */
+body::before {
+    content: "" !important;
+    display: block !important;
+    position: fixed !important;
+    inset: 0 !important;
+    
+    /* 1. Escolha aqui o tom de amarelo/creme que você mais gosta */
+    background-color: #fcf6e6 !important; 
+    
+    /* 2. A imagem original */
+    background-image: url("/bg.png") !important;
+    
+    /* 3. A MÁGICA: multiply tingue apenas as partes claras da imagem de amarelo */
+    background-blend-mode: multiply !important;
+    
+    background-repeat: repeat !important;
+    
+    /* 4. Tamanho maior para melhor visualização */
+    background-size: 900px !important; 
+    
+    /* 5. Ajuste a opacidade para o amarelo e o desenho aparecerem na medida certa */
+    opacity: 0.8 !important; 
+    
+    /* 6. Filtros apenas para dar nitidez, sem mudar a cor */
+    filter: contrast(1.1) brightness(1.02) !important;
+    
+    z-index: -1 !important; 
+    pointer-events: none !important;
+}
+
+/* Tipografia e Títulos */
+h1, h2, h3, .font-heading {
+    font-family: 'Inter', sans-serif;
+    color: var(--osaka-text-main);
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+}
+
+/* --- COMPONENTES --- */
+
+/* Estilo de Card Osaka solicitado */
+.osaka-card {
+    background: var(--osaka-card);
+    border: 1px solid var(--osaka-border);
+    box-shadow: 0 10px 30px -10px rgba(107, 68, 35, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.osaka-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -12px rgba(107, 68, 35, 0.12);
+    border-color: var(--osaka-accent);
+}
+
+/* Bordas ultra-finas e suaves auxiliares */
+.border-modern {
+    border: 1px solid var(--osaka-border);
+}
+
+/* Sombras suaves e realistas */
+.shadow-soft {
+    box-shadow: 0 4px 20px -2px rgba(107, 68, 35, 0.05);
+}
+
+/* Cards com efeito de desfoque sutil (opcional) */
+.glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 32px 0 rgba(107, 68, 35, 0.05);
+}
+
+/* --- ANIMAÇÕES --- */
+
+/* Animação de Flutuação da Osaka */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+    100% { transform: translateY(0px); }
+}
+
+.osaka-float {
+    animation: float 6s ease-in-out infinite;
+}
+
+/* Animação de Entrada Zoom */
+@keyframes zoomIn {
+    from { opacity: 0; transform: scale(0.98) translateY(5px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.animate-in {
+    animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Animação de Fade puro */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* --- UTILITÁRIOS --- */
+
+/* Scrollbar fina e personalizada para a Timeline */
+.custom-scrollbar::-webkit-scrollbar { 
+    width: 5px; 
+}
+.custom-scrollbar::-webkit-scrollbar-track { 
+    background: transparent; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb { 
+    background: #eaddc5; 
+    border-radius: 20px; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--osaka-accent);
+}
+
+/* Controle do Loader Global */
+#global-loader {
+    transition: opacity 0.4s ease-out, visibility 0.4s;
+    background-color: var(--osaka-bg-overlay);
+    backdrop-filter: blur(4px);
+}
+
+#global-loader.hidden {
     opacity: 0;
     pointer-events: none;
+    visibility: hidden;
+}
+
+/* Botões Modernos Osaka */
+button {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+button:active {
+    transform: scale(0.96);
 }

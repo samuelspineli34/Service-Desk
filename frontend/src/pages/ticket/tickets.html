@@ -4,105 +4,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tickets | ServiceDesk</title>
+    <title>Service Desk | Osaka Tech</title>
     <script type="module" src="/src/pages/ticket/tickets.ts"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <link rel="stylesheet" href="/src/style/global.css">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        
-        /* Custom scrollbar para a timeline */
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        body { font-family: 'Inter', sans-serif; background-color: transparent !important; }
     </style>
 </head>
 
-<body class="bg-slate-50 min-h-screen text-slate-900">
-    
-    <div id="global-loader" class="hidden fixed inset-0 z-[200] flex items-center justify-center bg-white/80 backdrop-blur-sm">
-        <div class="relative">
-            <div class="h-12 w-12 rounded-full border-4 border-slate-200 border-t-blue-600 animate-spin"></div>
-        </div>
+<body class="min-h-screen text-[#2d1a0f] antialiased">
+
+    <div id="global-loader" class="hidden fixed inset-0 z-[200] flex items-center justify-center bg-[#fdfaf3]/90 backdrop-blur-md">
+        <div class="h-10 w-10 rounded-full border-4 border-orange-200 border-t-[#d97706] animate-spin"></div>
     </div>
 
     <div id="sidebar-container"></div>
 
-    <main class="ml-64 p-10">
+    <main class="ml-64 p-12 animate-in">
         <!-- Header -->
-        <header class="mb-10 flex justify-between items-end">
+        <header class="mb-12 flex justify-between items-end">
             <div>
-                <h1 class="text-4xl font-[900] text-slate-900 tracking-tight">Tickets</h1>
-                <p class="text-slate-500 font-medium mt-1">Manage, prioritize and resolve support requests.</p>
+                <span class="text-[10px] font-black text-[#d97706] uppercase tracking-[0.3em] ml-1">Support Queue</span>
+                <h1 class="text-4xl font-[900] text-[#2d1a0f] tracking-tighter mt-1">Service Desk</h1>
+                <p class="text-[#6b4423]/60 font-medium mt-2 text-lg italic">"Everything is flowing smoothly... for now."</p>
             </div>
             <button onclick="window.openTicketModal()"
-                class="bg-blue-600 text-white px-8 py-4 rounded-2xl font-bold shadow-2xl shadow-blue-500/30 hover:bg-blue-700 hover:-translate-y-0.5 active:scale-95 transition-all flex items-center gap-2">
-                <span class="material-icons-round">add</span> 
+                class="bg-[#d97706] text-white px-8 py-4 rounded-[1.5rem] font-black shadow-2xl shadow-orange-900/20 hover:bg-[#b45309] hover:-translate-y-1 active:scale-95 transition-all flex items-center gap-2 uppercase text-xs tracking-widest">
+                <span class="material-icons-round text-sm">add</span>
                 <span>New Ticket</span>
             </button>
         </header>
 
         <!-- Table Card -->
-        <div class="bg-white rounded-[2.5rem] shadow-sm border border-slate-200/60 overflow-hidden">
-            <table class="w-full text-left">
-                <thead class="bg-slate-50/80 border-b border-slate-100">
+        <div class="bg-white/90 backdrop-blur-xl rounded-[3.5rem] shadow-[0_20px_50px_rgba(107,68,35,0.1)] border-2 border-orange-100 overflow-hidden">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-orange-50/50 border-b-2 border-orange-100">
                     <tr>
-                        <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Ticket Info</th>
-                        <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Status</th>
-                        <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Priority</th>
-                        <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Rating</th>
-                        <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Owner</th>
-                        <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] text-right">Actions</th>
+                        <th class="px-8 py-6 text-[10px] font-black text-[#6b4423]/60 uppercase tracking-[0.2em]">Ticket Information</th>
+                        <th class="px-8 py-6 text-[10px] font-black text-[#6b4423]/60 uppercase tracking-[0.2em]">Status</th>
+                        <th class="px-8 py-6 text-[10px] font-black text-[#6b4423]/60 uppercase tracking-[0.2em]">Priority</th>
+                        <th class="px-8 py-6 text-[10px] font-black text-[#6b4423]/60 uppercase tracking-[0.2em]">Quality</th>
+                        <th class="px-8 py-6 text-[10px] font-black text-[#6b4423]/60 uppercase tracking-[0.2em]">Owner</th>
+                        <th class="px-8 py-6 text-[10px] font-black text-[#6b4423]/60 uppercase tracking-[0.2em] text-right">Actions</th>
                     </tr>
                 </thead>
-                <tbody id="ticket-list" class="divide-y divide-slate-50">
-                    <!-- Dynamic Rows -->
+                <tbody id="ticket-list" class="divide-y divide-orange-50">
+                    <!-- Injetado via TS -->
                 </tbody>
             </table>
         </div>
     </main>
 
     <!-- TICKET MODAL -->
-    <div id="ticket-modal" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-md flex items-center justify-center z-[100] p-4">
-        <!-- Container expandível conforme conteúdo -->
-        <div class="bg-white w-full max-w-4xl rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh]">
+    <div id="ticket-modal" class="hidden fixed inset-0 bg-[#2d1a0f]/60 backdrop-blur-md flex items-center justify-center z-[100] p-4">
+        <div class="bg-white w-full max-w-5xl rounded-[4rem] shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh] border-2 border-orange-100 animate-in">
             
             <!-- Left Side: Form -->
-            <div class="flex-1 p-10 overflow-y-auto custom-scrollbar">
-                <div class="mb-8">
-                    <span class="text-[10px] font-black text-blue-600 uppercase tracking-widest bg-blue-50 px-3 py-1 rounded-full">Support Management</span>
-                    <h2 id="modal-title" class="text-3xl font-black text-slate-800 mt-2">New Ticket</h2>
+            <div class="flex-1 p-12 overflow-y-auto custom-scrollbar bg-white">
+                <div class="mb-10">
+                    <span class="text-[10px] font-black text-[#d97706] uppercase tracking-[0.3em] bg-orange-50 px-4 py-1.5 rounded-full border border-orange-100">Task Details</span>
+                    <h2 id="modal-title" class="text-3xl font-[900] text-[#2d1a0f] mt-4 tracking-tight">Modify Ticket</h2>
                 </div>
 
                 <form id="ticket-form" class="space-y-6">
                     <input type="hidden" id="field-id">
 
                     <div class="space-y-2">
-                        <label class="text-[11px] font-bold uppercase tracking-wider text-slate-400 ml-1">Subject</label>
-                        <input type="text" id="field-title" required placeholder="Brief summary of the issue..."
-                            class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-[1.25rem] outline-none focus:border-blue-500 focus:bg-white transition-all font-bold text-slate-700">
+                        <label class="text-[11px] font-black uppercase tracking-widest text-[#451a03] ml-1">Issue Subject</label>
+                        <input type="text" id="field-title" required placeholder="What needs attention?"
+                            class="w-full p-5 bg-white border-2 border-orange-100 rounded-2xl outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-[#d97706] transition-all font-bold text-[#2d1a0f]">
                     </div>
 
                     <div class="space-y-2">
-                        <label class="text-[11px] font-bold uppercase tracking-wider text-slate-400 ml-1">Description</label>
-                        <textarea id="field-desc" rows="4" placeholder="Explain the problem in detail..."
-                            class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-[1.25rem] outline-none focus:border-blue-500 focus:bg-white transition-all font-medium text-slate-600"></textarea>
+                        <label class="text-[11px] font-black uppercase tracking-widest text-[#451a03] ml-1">Context & Details</label>
+                        <textarea id="field-desc" rows="4" placeholder="Provide as much info as possible..."
+                            class="w-full p-5 bg-white border-2 border-orange-100 rounded-2xl outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-[#d97706] transition-all font-medium text-[#2d1a0f]"></textarea>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
                         <div class="space-y-2">
-                            <label class="text-[11px] font-bold uppercase tracking-wider text-slate-400 ml-1">Status</label>
-                            <select id="field-status" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-[1.25rem] font-bold outline-none appearance-none cursor-pointer focus:border-blue-500">
+                            <label class="text-[11px] font-black uppercase tracking-widest text-[#451a03] ml-1">Progress State</label>
+                            <select id="field-status" class="w-full p-5 bg-white border-2 border-orange-100 rounded-2xl font-bold outline-none cursor-pointer focus:border-[#d97706]">
                                 <option value="OPEN">🟢 OPEN</option>
                                 <option value="IN_PROGRESS">🟠 IN PROGRESS</option>
                                 <option value="CLOSED">🔴 CLOSED</option>
                             </select>
                         </div>
                         <div class="space-y-2">
-                            <label class="text-[11px] font-bold uppercase tracking-wider text-slate-400 ml-1">Priority</label>
-                            <select id="field-priority" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-[1.25rem] font-bold outline-none appearance-none cursor-pointer focus:border-blue-500">
+                            <label class="text-[11px] font-black uppercase tracking-widest text-[#451a03] ml-1">Urgency</label>
+                            <select id="field-priority" class="w-full p-5 bg-white border-2 border-orange-100 rounded-2xl font-bold outline-none cursor-pointer focus:border-[#d97706]">
                                 <option value="LOW">LOW</option>
                                 <option value="MEDIUM">MEDIUM</option>
                                 <option value="HIGH">HIGH</option>
@@ -111,46 +105,46 @@
                     </div>
 
                     <div class="space-y-2" id="user-assign-container">
-                        <label class="text-[11px] font-bold uppercase tracking-wider text-slate-400 ml-1">Assignee</label>
-                        <select id="field-user" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-[1.25rem] font-bold outline-none appearance-none cursor-pointer focus:border-blue-500"></select>
+                        <label class="text-[11px] font-black uppercase tracking-widest text-[#451a03] ml-1">Assigned Personnel</label>
+                        <select id="field-user" class="w-full p-5 bg-white border-2 border-orange-100 rounded-2xl font-bold outline-none focus:border-[#d97706]"></select>
                     </div>
 
-                    <div class="flex gap-4 pt-6">
+                    <div id="resolution-container" class="hidden space-y-2 pt-6 border-t-2 border-orange-50">
+                        <label class="text-[11px] font-black uppercase tracking-widest text-[#d97706] ml-1">Resolution Summary</label>
+                        <textarea id="field-resolution" rows="3" placeholder="Final solution report..."
+                            class="w-full p-5 bg-orange-50/30 border-2 border-orange-200 rounded-2xl outline-none focus:border-[#d97706] transition-all font-medium text-[#2d1a0f]"></textarea>
+                    </div>
+
+                    <div class="flex gap-4 pt-8">
                         <button type="button" onclick="window.closeTicketModal()"
-                            class="flex-1 py-4 font-bold text-slate-400 hover:text-slate-600 transition-colors">Dismiss</button>
+                            class="flex-1 py-5 font-black text-[#6b4423]/40 hover:text-[#d97706] uppercase text-[10px] tracking-widest transition-colors">Dismiss</button>
                         <button type="submit"
-                            class="flex-[2] bg-slate-900 text-white font-bold py-4 rounded-2xl shadow-xl hover:bg-black active:scale-95 transition-all">
-                            Save Changes
+                            class="flex-[2] bg-[#1e130c] text-white font-black py-5 rounded-[1.5rem] shadow-xl hover:bg-black active:scale-95 transition-all uppercase text-[10px] tracking-[0.2em]">
+                            Push Updates
                         </button>
                     </div>
                 </form>
             </div>
 
-            <!-- Right Side: Audit Log (Aparece apenas no Edit) -->
-            <div id="audit-section" class="hidden w-full md:w-[350px] bg-slate-50 border-l border-slate-100 flex flex-col h-full max-h-[90vh]">
-                <div class="p-8 border-b border-slate-200/60 flex items-center gap-3">
-                    <div class="p-2 bg-white rounded-xl shadow-sm text-blue-600">
-                        <span class="material-icons-round text-xl">history</span>
-                    </div>
-                    <div>
-                        <h4 class="font-black text-slate-800 text-sm uppercase tracking-tighter">Activity Log</h4>
-                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">History & Audit</p>
-                    </div>
-                </div>
-
-                <div id="ticket-history-list" class="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar">
-                    <!-- Logs injection -->
-                    <div class="flex justify-center py-10">
-                        <div class="animate-pulse flex flex-col items-center gap-2">
-                            <div class="h-2 w-20 bg-slate-200 rounded"></div>
-                            <div class="h-2 w-32 bg-slate-200 rounded"></div>
+            <!-- Right Side: Audit -->
+            <div id="audit-section" class="hidden w-full md:w-[380px] bg-[#fdfaf3] border-l-2 border-orange-100 flex flex-col h-full max-h-[90vh]">
+                <div class="p-10 border-b-2 border-orange-100 bg-white">
+                    <div class="flex items-center gap-3">
+                        <div class="p-3 bg-orange-50 rounded-2xl text-[#d97706] border border-orange-100 shadow-sm">
+                            <span class="material-icons-round text-2xl">history</span>
+                        </div>
+                        <div>
+                            <h4 class="font-[900] text-[#2d1a0f] text-lg tracking-tighter uppercase">History Log</h4>
+                            <p class="text-[9px] text-orange-400 font-black uppercase tracking-[0.3em]">System Audit</p>
                         </div>
                     </div>
                 </div>
-            </div>
 
+                <div id="ticket-history-list" class="flex-1 overflow-y-auto p-10 space-y-8 custom-scrollbar">
+                    <!-- Logs -->
+                </div>
+            </div>
         </div>
     </div>
-
 </body>
 </html>

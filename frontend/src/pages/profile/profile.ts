@@ -8,7 +8,7 @@ protectRoute();
 
 async function initProfilePage() {
     showLoader(); // Inicia o loader
-    
+
     try {
         initSidebar();
 
@@ -29,7 +29,7 @@ async function initProfilePage() {
         document.getElementById('user-role')!.textContent = user.role;
 
         // Avatar dinâmico
-        const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=2563eb&color=fff&size=256&bold=true`;
+        const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=d97706&color=fff&size=256&bold=true`;
         (document.getElementById('profile-avatar') as HTMLImageElement).src = avatarUrl;
 
         // 3. Lógica de troca de senha
@@ -47,7 +47,7 @@ async function initProfilePage() {
                     title: 'Security Updated',
                     message: 'Your password has been successfully changed.',
                     type: 'success'
-                }); 
+                });
                 passwordForm.reset();
             } catch (err: any) {
                 Modal.show({

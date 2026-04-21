@@ -8,4 +8,5 @@ export interface Ticket {
     user_name: string;
     created_at: string;
     rating?: number;
+    resolution?: string | null;
 }

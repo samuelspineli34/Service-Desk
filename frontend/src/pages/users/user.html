@@ -5,78 +5,92 @@
     <meta charset="UTF-8">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Osaka Tech - Users</title>
+    <title>Organization | Osaka Tech</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script type="module" src="/src/style/global.css"></script>
     <script type="module" src="/src/pages/users/user.ts"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <link rel="stylesheet" href="/src/style/global.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: transparent !important; }
+    </style>
 </head>
 
-<body class="bg-slate-50 min-h-screen">
-    <!-- Loader Global -->
-    <!-- Loader Global (Com a classe 'hidden' adicionada) -->
-<div id="global-loader" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm">
-  <div class="relative">
-    <div class="h-12 w-12 rounded-full border-4 border-slate-200 border-t-blue-600 animate-spin"></div>
-  </div>
-</div>
+<body class="min-h-screen text-[#2d1a0f] antialiased">
+    <!-- Loader Temático -->
+    <div id="global-loader" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-[#fdfaf3]/90 backdrop-blur-sm">
+        <div class="h-10 w-10 rounded-full border-4 border-orange-200 border-t-[#d97706] animate-spin"></div>
+    </div>
 
-    <!-- Container da Sidebar -->
     <div id="sidebar-container"></div>
 
-    <!-- Conteúdo Principal (Margem à esquerda de 64 para não ficar embaixo da sidebar) -->
-    <main class="ml-64 p-10">
-        <header class="mb-8 flex justify-between items-end">
+    <main class="ml-64 p-12 animate-in">
+        <header class="mb-12 flex justify-between items-end">
             <div>
-                <h1 class="text-3xl font-extrabold text-slate-900">Users</h1>
-                <p class="text-slate-500">Manage your organization members</p>
+                <span class="text-[10px] font-black text-[#d97706] uppercase tracking-[0.3em] ml-1">Human Resources</span>
+                <h1 class="text-4xl font-[900] text-[#2d1a0f] tracking-tighter mt-1">Organization</h1>
+                <p class="text-[#6b4423]/60 font-medium mt-2">Manage team members and access identity.</p>
             </div>
             <button onclick="window.openUserModal()"
-                class="bg-blue-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-lg hover:bg-blue-700 flex items-center gap-2">
-                <span class="material-icons-round">add</span> New User
+                class="bg-[#d97706] text-white px-8 py-4 rounded-[1.5rem] font-black shadow-2xl shadow-orange-900/20 hover:bg-[#b45309] hover:-translate-y-1 active:scale-95 transition-all flex items-center gap-2 uppercase text-xs tracking-widest">
+                <span class="material-icons-round text-sm">person_add</span> 
+                <span>Add Member</span>
             </button>
         </header>
 
-        <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            <ul id="user-list" class="divide-y divide-slate-100">
+        <!-- Lista de Usuários Estilizada -->
+        <section class="bg-white/90 backdrop-blur-xl rounded-[3rem] shadow-[0_20px_50px_rgba(107,68,35,0.1)] border-2 border-orange-100 overflow-hidden">
+            <ul id="user-list" class="divide-y divide-orange-50">
                 <!-- Carregado via TS -->
             </ul>
         </section>
     </main>
 
-    <!-- MODAIS -->
+    <!-- MODAL DE USUÁRIO -->
     <div id="user-modal"
-        class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-[100]">
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-8">
-            <h2 id="modal-title" class="text-2xl font-bold mb-6 text-slate-800">Add New User</h2>
-            <form id="user-form" class="space-y-4">
+        class="hidden fixed inset-0 bg-[#2d1a0f]/60 backdrop-blur-md flex items-center justify-center z-[100] p-4">
+        <div class="bg-white w-full max-w-md rounded-[3.5rem] shadow-2xl p-12 border-2 border-orange-100 animate-in">
+            <div class="text-center mb-10">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-orange-50 rounded-[1.5rem] text-[#d97706] mb-4 border-2 border-orange-100">
+                    <span class="material-icons-round text-3xl">badge</span>
+                </div>
+                <h2 id="modal-title" class="text-2xl font-black text-[#2d1a0f] tracking-tight">Add New User</h2>
+                <p class="text-[#6b4423]/60 text-sm mt-1">Fill in the professional details.</p>
+            </div>
+
+            <form id="user-form" class="space-y-6">
                 <input type="hidden" id="field-id">
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-1">Full Name</label>
-                    <input type="text" id="field-name" required
-                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                
+                <div class="space-y-2">
+                    <label class="text-[11px] font-black uppercase tracking-widest text-[#451a03] ml-1">Full Name</label>
+                    <input type="text" id="field-name" required placeholder="Ex: Ayumu Kasuga"
+                        class="w-full p-4 bg-white border-2 border-orange-100 rounded-2xl outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-[#d97706] transition-all font-bold text-[#2d1a0f]">
                 </div>
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-1">Email Address</label>
-                    <input type="email" id="field-email" required
-                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+
+                <div class="space-y-2">
+                    <label class="text-[11px] font-black uppercase tracking-widest text-[#451a03] ml-1">Email Address</label>
+                    <input type="email" id="field-email" required placeholder="osaka@tech.com"
+                        class="w-full p-4 bg-white border-2 border-orange-100 rounded-2xl outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-[#d97706] transition-all font-bold text-[#2d1a0f]">
                 </div>
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-1">Department</label>
+
+                <div class="space-y-2">
+                    <label class="text-[11px] font-black uppercase tracking-widest text-[#451a03] ml-1">Department</label>
                     <select id="field-dept"
-                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        class="w-full p-4 bg-white border-2 border-orange-100 rounded-2xl font-bold outline-none cursor-pointer focus:border-[#d97706]">
                         <option value="IT">IT Support</option>
                         <option value="HR">Human Resources</option>
                         <option value="Finance">Finance</option>
                         <option value="Sales">Sales</option>
                     </select>
                 </div>
-                <div class="flex justify-end gap-3 mt-8">
+
+                <div class="flex gap-4 pt-6">
                     <button type="button" onclick="window.closeUserModal()"
-                        class="px-4 py-2 text-slate-500 font-bold">Cancel</button>
+                        class="flex-1 py-4 font-black text-[#6b4423]/40 hover:text-[#d97706] uppercase text-[10px] tracking-widest transition-colors">Cancel</button>
                     <button type="submit"
-                        class="px-6 py-2 bg-blue-600 text-white rounded-lg font-bold shadow-lg shadow-blue-200">Save
-                        User</button>
+                        class="flex-[2] bg-[#1e130c] text-white font-[900] py-4 rounded-[1.2rem] shadow-xl hover:bg-black transition-all active:scale-95 uppercase text-[10px] tracking-[0.2em]">
+                        Save Member
+                    </button>
                 </div>
             </form>
         </div>

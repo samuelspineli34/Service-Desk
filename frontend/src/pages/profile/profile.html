@@ -4,86 +4,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile | ServiceDesk</title>
+    <title>My Profile | Osaka Tech</title>
     <script type="module" src="/src/pages/profile/profile.ts"></script>
     <script type="module" src="/src/style/global.css"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
-
-        body {
-            font-family: 'Inter', sans-serif;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: transparent !important; }
+        .animate-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 
-<body class="bg-slate-50 min-h-screen">
-    <!-- Loader Global -->
-    <div id="global-loader"
-        class="hidden fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm">
-        <div class="relative">
-            <div class="h-12 w-12 rounded-full border-4 border-slate-200 border-t-blue-600 animate-spin"></div>
-        </div>
+<body class="min-h-screen text-[#2d1a0f] antialiased">
+    <!-- Loader Temático -->
+    <div id="global-loader" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-[#fdfaf3]/90 backdrop-blur-sm">
+        <div class="h-10 w-10 rounded-full border-4 border-orange-200 border-t-[#d97706] animate-spin"></div>
     </div>
 
     <div id="sidebar-container"></div>
 
-    <main class="ml-64 p-10 max-w-5xl">
+    <main class="ml-64 p-12 max-w-6xl animate-in">
         <!-- Profile Header Section -->
-        <header class="mb-10 flex items-center justify-between">
-            <div class="flex items-center gap-6">
-                <div class="relative">
+        <header class="mb-12 flex items-center justify-between">
+            <div class="flex items-center gap-8">
+                <div class="relative group">
                     <img id="profile-avatar"
-                        class="w-24 h-24 rounded-3xl object-cover ring-4 ring-white shadow-xl shadow-blue-500/10" src=""
+                        class="w-28 h-28 rounded-[2.5rem] object-cover ring-4 ring-white shadow-2xl border-2 border-orange-100 transition-transform group-hover:scale-105" src=""
                         alt="User Avatar">
-                    <div
-                        class="absolute -bottom-2 -right-2 bg-blue-600 text-white p-1.5 rounded-xl shadow-lg border-2 border-white">
+                    <div class="absolute -bottom-1 -right-1 bg-[#d97706] text-white p-2 rounded-2xl shadow-lg border-4 border-white">
                         <span class="material-icons-round text-sm">verified</span>
                     </div>
                 </div>
                 <div>
-                    <h1 class="text-3xl font-black text-slate-900 tracking-tight" id="header-name">---</h1>
-                    <p class="text-slate-500 font-medium flex items-center gap-1">
-                        <span class="material-icons-round text-sm">business_center</span>
-                        <span id="header-dept">---</span>
-                    </p>
+                    <h1 class="text-4xl font-[900] text-[#2d1a0f] tracking-tight" id="header-name">---</h1>
+                    <div class="flex items-center gap-3 mt-2">
+                        <!-- Badge de Role em tons quentes -->
+                        <span class="px-4 py-1.5 bg-orange-50 text-[#d97706] text-[10px] font-black rounded-full border-2 border-orange-100 uppercase tracking-widest" id="user-role">---</span>
+                        <p class="text-[#6b4423]/60 font-bold text-xs uppercase tracking-widest flex items-center gap-1">
+                            <span class="material-icons-round text-sm">business_center</span>
+                            <span id="header-dept">---</span>
+                        </p>
+                    </div>
                 </div>
             </div>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
             <!-- Left Column: Personal Info -->
             <div class="lg:col-span-2 space-y-8">
-                <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200">
-                    <div class="flex items-center gap-3 mb-8">
-                        <div class="p-2 bg-blue-50 rounded-xl text-blue-600">
-                            <span class="material-icons-round">contact_mail</span>
+                <div class="bg-white p-10 rounded-[3.5rem] shadow-[0_20px_50px_rgba(107,68,35,0.08)] border-2 border-orange-100">
+                    <div class="flex items-center gap-3 mb-10">
+                        <div class="p-2.5 bg-orange-50 rounded-xl text-[#d97706] border-2 border-orange-100">
+                            <span class="material-icons-round">account_circle</span>
                         </div>
-                        <h2 class="text-xl font-bold text-slate-800">Account Details</h2>
+                        <h2 class="text-2xl font-black text-[#2d1a0f] tracking-tight">Account Details</h2>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Full
-                                Name</label>
-                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 font-bold"
-                                id="user-name">---</div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-black uppercase tracking-[0.15em] text-[#451a03] ml-1">Full Name</label>
+                            <div class="p-5 bg-white border-2 border-orange-100 rounded-2xl text-[#2d1a0f] font-bold text-sm" id="user-name">---</div>
                         </div>
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Work
-                                Email</label>
-                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 font-bold"
-                                id="user-email">---</div>
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">System
-                                Role</label>
-                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl">
-                                <span id="user-role"
-                                    class="px-3 py-1 bg-blue-100 text-blue-700 text-[10px] font-black rounded-lg border border-blue-200 uppercase tracking-tighter">---</span>
-                            </div>
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-black uppercase tracking-[0.15em] text-[#451a03] ml-1">Work Email</label>
+                            <div class="p-5 bg-white border-2 border-orange-100 rounded-2xl text-[#2d1a0f] font-bold text-sm" id="user-email">---</div>
                         </div>
                     </div>
                 </div>
@@ -91,37 +77,34 @@
 
             <!-- Right Column: Security -->
             <div class="space-y-8">
-                <div class="bg-white p-8 rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-200">
+                <div class="bg-white p-10 rounded-[3.5rem] shadow-2xl shadow-orange-900/10 border-2 border-orange-100">
                     <div class="flex items-center gap-3 mb-8">
-                        <div class="p-2 bg-amber-50 rounded-xl text-amber-500">
-                            <span class="material-icons-round">shield</span>
+                        <div class="p-2.5 bg-amber-50 rounded-xl text-amber-600 border-2 border-amber-100">
+                            <span class="material-icons-round">security</span>
                         </div>
-                        <h2 class="text-xl font-bold text-slate-800">Security</h2>
+                        <h2 class="text-2xl font-black text-[#2d1a0f] tracking-tight">Security</h2>
                     </div>
 
-                    <form id="password-form" class="space-y-5">
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Current
-                                Password</label>
+                    <form id="password-form" class="space-y-6">
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-black uppercase tracking-[0.15em] text-[#451a03] ml-1">Current Password</label>
                             <input type="password" id="old-password" required placeholder="••••••••"
-                                class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-medium">
+                                class="w-full p-4 bg-white border-2 border-orange-100 rounded-2xl focus:ring-4 focus:ring-orange-500/5 focus:border-[#d97706] outline-none transition-all font-bold text-[#2d1a0f] placeholder:text-slate-300">
                         </div>
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">New
-                                Password</label>
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-black uppercase tracking-[0.15em] text-[#451a03] ml-1">New Password</label>
                             <input type="password" id="new-password" required placeholder="••••••••"
-                                class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-medium">
+                                class="w-full p-4 bg-white border-2 border-orange-100 rounded-2xl focus:ring-4 focus:ring-orange-500/5 focus:border-[#d97706] outline-none transition-all font-bold text-[#2d1a0f] placeholder:text-slate-300">
                         </div>
                         <button type="submit"
-                            class="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-slate-800 transition-all active:scale-[0.98]">
-                            Update Password
+                            class="w-full bg-[#1e130c] text-white font-[900] py-5 rounded-[1.5rem] shadow-xl hover:bg-black transition-all active:scale-[0.98] uppercase text-[11px] tracking-[0.2em]">
+                            Update Security
                         </button>
                     </form>
                 </div>
             </div>
         </div>
     </main>
-
 </body>
 
 </html>

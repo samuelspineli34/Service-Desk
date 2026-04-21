@@ -4,53 +4,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <title>Dashboard | ServiceDesk</title>
-    <!-- Scripts no topo (o navegador carrega mas espera o HTML terminar para executar) -->
+    <title>Overview | Osaka Tech</title>
     <script type="module" src="/src/pages/dashboard/dashboard.ts"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <link rel="stylesheet" href="/src/style/global.css">
+
+    <style>
+        body {
+            background-color: transparent !important;
+        }
+    </style>
+
 </head>
 
-<body class="bg-slate-50 min-h-screen">
-    <!-- Loader Global -->
-    <!-- Loader Global (Com a classe 'hidden' adicionada) -->
-<div id="global-loader" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm">
-  <div class="relative">
-    <div class="h-12 w-12 rounded-full border-4 border-slate-200 border-t-blue-600 animate-spin"></div>
-  </div>
-</div>
+<body class="min-h-screen antialiased bg-[#fdfaf3]">
+    <!-- FUNDO DA OSAKA (Injetado via HTML para garantir que apareça) -->
+    <div style="
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        height: 100%; 
+        z-index: -1; 
+        background-image: url('/bg.png'); 
+        background-repeat: repeat; 
+        background-size: 500px; 
+        opacity: 0.15; 
+        filter: sepia(0.3) contrast(1.1);
+        pointer-events: none;
+    "></div>
+    <div id="global-loader"
+        class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-white/90 backdrop-blur-md">
+        <div class="h-10 w-10 rounded-full border-4 border-orange-100 border-t-[#d97706] animate-spin"></div>
+    </div>
 
     <div id="sidebar-container"></div>
-    <main class="ml-64 p-10">
-        <header class="mb-10">
-            <h1 class="text-3xl font-black text-slate-900 tracking-tight">System Overview</h1>
+
+    <main class="ml-64 p-12">
+        <header class="mb-16">
+            <h1 class="font-heading text-5xl font-[900] text-[#2d1a0f] tracking-tighter">System Overview</h1>
+            <p class="text-[#6b4423] font-medium text-lg mt-2 tracking-tight opacity-80 italic">"Sata andagi!" —
+                Processing requests...</p>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-            <!-- Card 1: Active Tickets -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <span class="material-icons-round text-blue-600 mb-2">confirmation_number</span>
-                <p class="text-slate-400 text-xs font-bold uppercase">Active Tickets</p>
-                <h3 class="text-3xl font-black text-slate-900" id="stat-tickets">0</h3>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="osaka-card osaka-float p-10 rounded-[3.5rem]">
+                <div
+                    class="w-14 h-14 bg-orange-100 text-[#d97706] rounded-[1.5rem] flex items-center justify-center mb-8">
+                    <span class="material-icons-round text-3xl">confirmation_number</span>
+                </div>
+                <p class="text-[#6b4423] text-[10px] font-black uppercase tracking-[0.3em] mb-2 opacity-60">Active
+                    Tickets</p>
+                <h3 class="font-heading text-5xl font-[900] text-[#2d1a0f] tracking-tighter" id="stat-tickets">0</h3>
             </div>
-            <!-- Card 2: Resolved -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <span class="material-icons-round text-emerald-600 mb-2">check_circle</span>
-                <p class="text-slate-400 text-xs font-bold uppercase">Resolved</p>
-                <h3 class="text-3xl font-black text-slate-900" id="stat-resolved">0</h3>
+
+            <div class="osaka-card osaka-float-delay p-10 rounded-[3.5rem]">
+                <div
+                    class="w-14 h-14 bg-emerald-100 text-emerald-800 rounded-[1.5rem] flex items-center justify-center mb-8">
+                    <span class="material-icons-round text-3xl">check_circle</span>
+                </div>
+                <p class="text-[#6b4423] text-[10px] font-black uppercase tracking-[0.3em] mb-2 opacity-60">Resolved</p>
+                <h3 class="font-heading text-5xl font-[900] text-[#2d1a0f] tracking-tighter" id="stat-resolved">0</h3>
             </div>
-            <!-- Card 3: Users -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <span class="material-icons-round text-purple-600 mb-2">group</span>
-                <p class="text-slate-400 text-xs font-bold uppercase">Users</p>
-                <h3 class="text-3xl font-black text-slate-900" id="stat-users">0</h3>
+
+            <div class="osaka-card osaka-float p-10 rounded-[3.5rem]">
+                <div class="w-14 h-14 bg-blue-100 text-blue-800 rounded-[1.5rem] flex items-center justify-center mb-8">
+                    <span class="material-icons-round text-3xl">group</span>
+                </div>
+                <p class="text-[#6b4423] text-[10px] font-black uppercase tracking-[0.3em] mb-2 opacity-60">Total Users
+                </p>
+                <h3 class="font-heading text-5xl font-[900] text-[#2d1a0f] tracking-tighter" id="stat-users">0</h3>
             </div>
-            <!-- Card 4: Rating -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <span class="material-icons-round text-amber-500 mb-2">stars</span>
-                <p class="text-slate-400 text-xs font-bold uppercase">Avg Rating</p>
-                <h3 class="text-3xl font-black text-slate-900" id="stat-rating">0.0</h3>
+
+            <div class="osaka-card osaka-float-delay p-10 rounded-[3.5rem]">
+                <div
+                    class="w-14 h-14 bg-amber-100 text-[#b45309] rounded-[1.5rem] flex items-center justify-center mb-8">
+                    <span class="material-icons-round text-3xl">stars</span>
+                </div>
+                <p class="text-[#6b4423] text-[10px] font-black uppercase tracking-[0.3em] mb-2 opacity-60">Avg Rating
+                </p>
+                <h3 class="font-heading text-5xl font-[900] text-[#2d1a0f] tracking-tighter" id="stat-rating">0.0</h3>
             </div>
         </div>
     </main>
