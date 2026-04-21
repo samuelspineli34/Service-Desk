@@ -1,5 +1,11 @@
 {
   "rewrites": [
-    { "source": "/login", "destination": "/dist/src/pages/login/login.html" }
+    { "source": "/login", "destination": "/src/pages/login/login.html" },
+    { "source": "/dashboard", "destination": "/src/pages/dashboard/dashboard.html" },
+    { "source": "/users", "destination": "/src/pages/users/user.html" },
+    { "source": "/tickets", "destination": "/src/pages/ticket/tickets.html" },
+    { "source": "/profile", "destination": "/src/pages/profile/profile.html" },
+    { "source": "/roles", "destination": "/src/pages/roles/roles.html" },
+    { "source": "/", "destination": "/index.html" }
   ]
 }
