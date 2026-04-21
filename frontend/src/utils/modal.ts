@@ -9,11 +9,11 @@ interface ModalOptions {
 }
 
 export const Modal = {
-    show({ title, message, type = 'info', confirmText = 'OK' }: ModalOptions) {
+    show({ title, message, type = 'info', confirmText = 'Entendido' }: ModalOptions) {
         this._inject(title, message, type, confirmText, false);
     },
 
-    confirm({ title, message, type = 'warning', confirmText = 'Confirm', onConfirm }: ModalOptions) {
+    confirm({ title, message, type = 'warning', confirmText = 'Confirmar', onConfirm }: ModalOptions) {
         this._inject(title, message, type, confirmText, true, onConfirm);
     },
 
@@ -22,37 +22,63 @@ export const Modal = {
         const oldModal = document.getElementById('global-modal-container');
         if (oldModal) oldModal.remove();
 
+        // Configuração de Cores Osaka High-Contrast
         const colors = {
-            success: { bg: 'bg-emerald-50', text: 'text-emerald-600', icon: 'check_circle', btn: 'bg-emerald-600' },
-            error: { bg: 'bg-red-50', text: 'text-red-600', icon: 'error', btn: 'bg-red-600' },
-            warning: { bg: 'bg-amber-50', text: 'text-amber-600', icon: 'warning', btn: 'bg-amber-600' },
-            info: { bg: 'bg-blue-50', text: 'text-blue-600', icon: 'info', btn: 'bg-blue-600' }
+            success: { 
+                bg: 'bg-emerald-50', 
+                text: 'text-emerald-600', 
+                icon: 'check_circle', 
+                border: 'border-emerald-100' 
+            },
+            error: { 
+                bg: 'bg-red-50', 
+                text: 'text-red-600', 
+                icon: 'dangerous', 
+                border: 'border-red-100' 
+            },
+            warning: { 
+                bg: 'bg-orange-50', 
+                text: 'text-[#d97706]', 
+                icon: 'warning', 
+                border: 'border-orange-100' 
+            },
+            info: { 
+                bg: 'bg-blue-50', 
+                text: 'text-blue-600', 
+                icon: 'info', 
+                border: 'border-blue-100' 
+            }
         };
 
         const config = colors[type];
 
         const modalHtml = `
-        <div id="global-modal-container" class="fixed inset-0 z-[999] flex items-center justify-center p-4 animate-in fade-in duration-200">
-            <!-- Backdrop -->
-            <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+        <div id="global-modal-container" class="fixed inset-0 z-[999] flex items-center justify-center p-4 animate-in fade-in duration-300">
+            <!-- Backdrop: Marrom Café com desfoque -->
+            <div class="fixed inset-0 bg-[#2d1a0f]/60 backdrop-blur-md"></div>
             
-            <!-- Card -->
-            <div class="relative bg-white w-full max-w-sm rounded-[2.5rem] shadow-2xl p-8 transform animate-in zoom-in-95 duration-200">
+            <!-- Card: Bubbly Style com Borda Reforçada -->
+            <div class="relative bg-white w-full max-w-sm rounded-[3.5rem] shadow-[0_32px_64px_-12px_rgba(69,26,3,0.3)] p-10 border-2 border-orange-100 transform animate-in zoom-in-95 duration-200">
                 <div class="text-center">
-                    <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-2xl ${config.bg} ${config.text} mb-6">
-                        <span class="material-icons-round text-3xl">${config.icon}</span>
+                    <!-- Ícone em Container Arredondado -->
+                    <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-[2rem] ${config.bg} ${config.text} border-2 ${config.border} mb-6 shadow-sm">
+                        <span class="material-icons-round text-4xl">${config.icon}</span>
                     </div>
-                    <h3 class="text-2xl font-black text-slate-900 mb-2">${title}</h3>
-                    <p class="text-slate-500 font-medium leading-relaxed mb-8">${message}</p>
+                    
+                    <h3 class="text-2xl font-[900] text-[#2d1a0f] mb-3 tracking-tight">${title}</h3>
+                    <p class="text-[#6b4423]/70 font-bold leading-relaxed mb-10 text-sm">${message}</p>
                 </div>
 
-                <div class="flex gap-3">
-                    ${isConfirm ? `
-                        <button id="modal-cancel" class="flex-1 px-4 py-3 text-slate-400 font-bold hover:text-slate-600 transition-colors">Cancel</button>
-                    ` : ''}
-                    <button id="modal-confirm" class="flex-1 px-4 py-3 ${config.btn} text-white font-bold rounded-2xl shadow-lg transition-all active:scale-95">
+                <div class="flex flex-col gap-3">
+                    <button id="modal-confirm" class="w-full py-4 bg-[#1e130c] hover:bg-black text-white font-black rounded-2xl shadow-xl transition-all active:scale-95 uppercase text-[10px] tracking-[0.2em]">
                         ${confirmText}
                     </button>
+                    
+                    ${isConfirm ? `
+                        <button id="modal-cancel" class="w-full py-3 text-[#6b4423]/40 font-black hover:text-[#d97706] transition-colors uppercase text-[10px] tracking-widest">
+                            Cancelar
+                        </button>
+                    ` : ''}
                 </div>
             </div>
         </div>
@@ -60,12 +86,15 @@ export const Modal = {
 
         document.body.insertAdjacentHTML('beforeend', modalHtml);
 
-        // Lógica dos botões
-        const close = () => document.getElementById('global-modal-container')?.remove();
+        const close = () => {
+            const container = document.getElementById('global-modal-container');
+            container?.classList.add('opacity-0');
+            setTimeout(() => container?.remove(), 300);
+        };
 
         document.getElementById('modal-confirm')?.addEventListener('click', () => {
-            close();
             if (onConfirm) onConfirm();
+            close();
         });
 
         document.getElementById('modal-cancel')?.addEventListener('click', close);
