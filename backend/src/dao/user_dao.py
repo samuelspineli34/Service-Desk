@@ -5,20 +5,26 @@ from src.dto.user_dto import UserDTO
 class UserDAO:
     def get_connection(self):
         config = Config.get_db_config()
+        
         try:
-            # Tente conectar
-            return psycopg2.connect(**config, application_name='ServiceDesk')
+            # Se o config for uma STRING (caso do Render/DATABASE_URL)
+            if isinstance(config, str):
+                return psycopg2.connect(config, application_name='ServiceDesk')
+            
+            # Se o config for um DICIONÁRIO (caso do seu PC local)
+            else:
+                return psycopg2.connect(**config, application_name='ServiceDesk')
+                
         except Exception as e:
-            # Tenta decodificar a mensagem de erro do Postgres usando o encoding do Windows
+            # Tratamento de erro para mensagens com acento no Windows
             try:
                 error_msg = str(e).encode('cp1252', errors='ignore').decode('cp1252')
             except:
-                error_msg = "Erro desconhecido ao conectar no banco"
-                
-            print(f"DEBUG: Erro real do Postgres: {error_msg}")
+                error_msg = str(e)
             
-            # Aqui sim, disparamos o erro legível
+            print(f"DEBUG: Erro real do Postgres: {error_msg}")
             raise Exception(f"O PostgreSQL rejeitou a conexão: {error_msg}")
+        
 
     def get_all_users(self):
         conn = self.get_connection()
