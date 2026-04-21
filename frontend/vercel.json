@@ -1,10 +1,11 @@
 {
-  "routes": [
-    { "src": "^/login$", "dest": "/login.html" },
-    { "src": "^/dashboard$", "dest": "/dashboard.html" },
-    { "src": "^/users$", "dest": "/users.html" },
-    { "src": "^/tickets$", "dest": "/tickets.html" },
-    { "src": "^/profile$", "dest": "/profile.html" },
-    { "src": "^/roles$", "dest": "/roles.html" }
+  "rewrites": [
+    { "source": "/login", "destination": "/src/pages/login/login.html" },
+    { "source": "/dashboard", "destination": "/src/pages/dashboard/dashboard.html" },
+    { "source": "/users", "destination": "/src/pages/users/user.html" },
+    { "source": "/tickets", "destination": "/src/pages/ticket/tickets.html" },
+    { "source": "/profile", "destination": "/src/pages/profile/profile.html" },
+    { "source": "/roles", "destination": "/src/pages/roles/roles.html" },
+    { "source": "/", "destination": "/index.html" }
   ]
 }

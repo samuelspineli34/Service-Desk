@@ -1,4 +1,5 @@
 import os
+import sys
 # Mantemos o encoding do Postgres para o Windows não reclamar
 os.environ['PGCLIENTENCODING'] = 'utf-8'
 
@@ -15,6 +16,9 @@ from src.routes.role_routes import role_bp
 
 # Import da sua classe de configuração
 from src.config.config import Config
+
+# Adiciona o diretório 'backend' ao path do Python
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 app = Flask(__name__)
 
