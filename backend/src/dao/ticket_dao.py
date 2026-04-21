@@ -46,6 +46,16 @@ class TicketDAO:
         cursor.close()
         conn.close()
         return tickets
+    
+    def get_by_id(self, ticket_id):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        query = "SELECT id, title, description, status, priority, user_id, NULL, created_at, rating FROM tickets WHERE id = %s"
+        cursor.execute(query, (ticket_id,))
+        row = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        return TicketDTO(*row) if row else None
 
     def rate_ticket(self, ticket_id, rating, user_id):
         conn = self.get_connection()

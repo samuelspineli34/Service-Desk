@@ -23,18 +23,26 @@ class TicketService:
             print(f"Service Error (Create): {e}")
 
     def update_ticket(self, ticket_id, data, updated_by_user_id):
-        # 1. Busca o ticket atual antes de mudar
-        old_ticket = self.dao.get_by_id(ticket_id) # Você precisará desse método no DAO
-        
-        # 2. Executa a atualização
-        self.dao.update(ticket_id, data)
-        
-        # 3. Compara e gera logs
-        if old_ticket.status != data['status']:
-            self.dao.add_audit_log(ticket_id, updated_by_user_id, 'STATUS_CHANGE', old_ticket.status, data['status'])
+        try:
+            # 1. Busca o ticket atual para comparar valores
+            old_ticket = self.dao.get_by_id(ticket_id)
+            if not old_ticket:
+                return False
+
+            # 2. Executa a atualização no banco
+            self.dao.update(ticket_id, data)
             
-        if old_ticket.priority != data['priority']:
-            self.dao.add_audit_log(ticket_id, updated_by_user_id, 'PRIORITY_CHANGE', old_ticket.priority, data['priority'])
+            # 3. Gera logs de auditoria se houve mudança
+            if old_ticket.status != data['status']:
+                self.dao.add_audit_log(ticket_id, updated_by_user_id, 'STATUS_CHANGE', old_ticket.status, data['status'])
+                
+            if old_ticket.priority != data['priority']:
+                self.dao.add_audit_log(ticket_id, updated_by_user_id, 'PRIORITY_CHANGE', old_ticket.priority, data['priority'])
+            
+            return True
+        except Exception as e:
+            print(f"Service Error (Update): {e}")
+            return False
 
     def delete_ticket(self, ticket_id):
         try:
@@ -56,3 +64,7 @@ class TicketService:
         except Exception as e:
             print(f"Service Error (Rating): {e}")
             return False
+        
+    def get_history(self, ticket_id):
+        # O Service apenas repassa o pedido para o DAO
+        return self.dao.get_history(ticket_id)

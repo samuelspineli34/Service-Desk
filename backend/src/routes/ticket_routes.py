@@ -46,9 +46,14 @@ def create():
 @ticket_bp.route('/ticket/<uuid:ticket_id>', methods=['PUT'])
 @jwt_required()
 def update(ticket_id):
-    # Opcional: Validar se o usuário é o dono do ticket ou técnico
-    ticket_service.update_ticket(str(ticket_id), request.json)
-    return jsonify({"message": "Updated"}), 200
+    user_id = get_jwt_identity() # Pega o ID de quem está logado para o Log de Auditoria
+    data = request.json
+    
+    success = ticket_service.update_ticket(str(ticket_id), data, user_id)
+    
+    if success:
+        return jsonify({"message": "Updated"}), 200
+    return jsonify({"error": "Failed to update"}), 500
 
 @ticket_bp.route('/ticket/<uuid:ticket_id>', methods=['DELETE'])
 @jwt_required()
