@@ -2,6 +2,8 @@ import { initSidebar } from '../../components/sidebar';
 import { userService } from '../../services/api/user.service';
 import { User } from '../../interfaces/user.interface';
 import { Modal } from '../../utils/modal';
+import { protectRoute } from '../../utils/auth-guard';
+protectRoute(); 
 
 // 1. Funções globais para o Modal (precisam estar no window para o HTML acessar)
 (window as any).openUserModal = (user?: User) => {

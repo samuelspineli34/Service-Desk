@@ -5,6 +5,8 @@ import { authService } from '../../services/api/auth.service';
 import { apiClient } from '../../services/api/api-client';
 import { Ticket } from '../../interfaces/ticket.interface';
 import { Modal } from '../../utils/modal';
+import { protectRoute } from '../../utils/auth-guard';
+protectRoute(); 
 
 const currentUser = authService.getCurrentUser();
 const isStaff = ['ADMIN', 'MANAGER', 'TECHNICIAN'].includes(currentUser?.role || '');

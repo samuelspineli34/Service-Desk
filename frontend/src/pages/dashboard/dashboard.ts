@@ -1,5 +1,8 @@
 import { initSidebar } from '../../components/sidebar';
 import { apiClient } from '../../services/api/api-client';
+import { protectRoute } from '../../utils/auth-guard';
+
+protectRoute(); 
 
 async function loadDashboard() {
     initSidebar();

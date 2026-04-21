@@ -1,6 +1,8 @@
 import { initSidebar } from '../../components/sidebar';
 import { apiClient } from '../../services/api/api-client';
 import { Modal } from '../../utils/modal';
+import { protectRoute } from '../../utils/auth-guard';
+protectRoute(); 
 
 interface Permission { id: string; code: string; description: string; }
 interface Role { id: string; name: string; permissions: string[]; }

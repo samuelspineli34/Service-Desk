@@ -1,6 +1,8 @@
 import { initSidebar } from '../../components/sidebar';
 import { apiClient } from '../../services/api/api-client';
 import { Modal } from '../../utils/modal';
+import { protectRoute } from '../../utils/auth-guard';
+protectRoute(); 
 
 async function initProfilePage() {
     initSidebar();
