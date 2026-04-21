@@ -2,6 +2,7 @@ import { defineConfig, ViteDevServer } from 'vite';
 import { resolve } from 'path';
 
 export default defineConfig({
+  base: '/',
   root: './',
   // Criamos um pequeno plugin interno para resolver as rotas limpas
   plugins: [

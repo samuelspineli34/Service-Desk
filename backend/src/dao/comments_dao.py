@@ -1,16 +1,20 @@
 import psycopg2
-from config.config import Config
+from src.config.config import Config
 
 class CommentDAO:
-    def get_connection():
+    def get_connection(self):
         config = Config.get_db_config()
         
-        if isinstance(config, str):
-            # Se for a URL do Render
-            return psycopg2.connect(config)
-        else:
-            # Se for o dicionário local
-            return psycopg2.connect(**config)
+        try:
+            if isinstance(config, str):
+                # Se for a URL do Render
+                return psycopg2.connect(config, application_name='ServiceDesk')
+            else:
+                # Se for o dicionário local
+                return psycopg2.connect(**config, application_name='ServiceDesk')
+        except UnicodeDecodeError:
+            # Esse try/except resolve o problema do erro com acento do Postgres no Windows
+            raise Exception("ERRO FATAL: O PostgreSQL recusou a conexão. Verifique se DB_USER, DB_PASSWORD e DB_NAME estão corretos no seu arquivo .env")
 
     def add_comment(self, ticket_id, user_id, text):
         conn = self.get_connection()

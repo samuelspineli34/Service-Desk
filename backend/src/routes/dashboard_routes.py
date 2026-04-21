@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required
-from config.config import Config
+from src.config.config import Config
 import psycopg2
 
 dash_bp = Blueprint('dashboard', __name__)

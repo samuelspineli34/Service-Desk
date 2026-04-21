@@ -1,4 +1,4 @@
-from dao.user_dao import UserDAO
+from src.dao.user_dao import UserDAO
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token
 

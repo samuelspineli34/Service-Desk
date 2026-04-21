@@ -1,0 +1,10 @@
+{
+  "routes": [
+    { "src": "^/login$", "dest": "/login.html" },
+    { "src": "^/dashboard$", "dest": "/dashboard.html" },
+    { "src": "^/users$", "dest": "/users.html" },
+    { "src": "^/tickets$", "dest": "/tickets.html" },
+    { "src": "^/profile$", "dest": "/profile.html" },
+    { "src": "^/roles$", "dest": "/roles.html" }
+  ]
+}

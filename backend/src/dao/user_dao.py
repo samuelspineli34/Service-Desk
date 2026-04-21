@@ -1,11 +1,24 @@
 import psycopg2
-from config.config import Config
-from dto.user_dto import UserDTO
+from src.config.config import Config
+from src.dto.user_dto import UserDTO
 
 class UserDAO:
     def get_connection(self):
-        db_params = Config.get_db_config()
-        return psycopg2.connect(**db_params, application_name='ServiceDesk', client_encoding='utf8')
+        config = Config.get_db_config()
+        try:
+            # Tente conectar
+            return psycopg2.connect(**config, application_name='ServiceDesk')
+        except Exception as e:
+            # Tenta decodificar a mensagem de erro do Postgres usando o encoding do Windows
+            try:
+                error_msg = str(e).encode('cp1252', errors='ignore').decode('cp1252')
+            except:
+                error_msg = "Erro desconhecido ao conectar no banco"
+                
+            print(f"DEBUG: Erro real do Postgres: {error_msg}")
+            
+            # Aqui sim, disparamos o erro legível
+            raise Exception(f"O PostgreSQL rejeitou a conexão: {error_msg}")
 
     def get_all_users(self):
         conn = self.get_connection()

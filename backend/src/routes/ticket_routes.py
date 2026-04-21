@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt, get_jwt_identity
-from services.ticket_service import TicketService
+from src.services.ticket_service import TicketService
 
 ticket_bp = Blueprint('ticket', __name__)
 ticket_service = TicketService()

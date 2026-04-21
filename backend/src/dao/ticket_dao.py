@@ -1,18 +1,22 @@
 import psycopg2
-from config.config import Config
-from dto.ticket_dto import TicketDTO
+from src.config.config import Config
+from src.dto.ticket_dto import TicketDTO
 from datetime import datetime
 
 class TicketDAO:
-    def get_connection():
+    def get_connection(self):
         config = Config.get_db_config()
         
-        if isinstance(config, str):
-            # Se for a URL do Render
-            return psycopg2.connect(config)
-        else:
-            # Se for o dicionário local
-            return psycopg2.connect(**config)
+        try:
+            if isinstance(config, str):
+                # Se for a URL do Render
+                return psycopg2.connect(config, application_name='ServiceDesk')
+            else:
+                # Se for o dicionário local
+                return psycopg2.connect(**config, application_name='ServiceDesk')
+        except UnicodeDecodeError:
+            # Esse try/except resolve o problema do erro com acento do Postgres no Windows
+            raise Exception("ERRO FATAL: O PostgreSQL recusou a conexão. Verifique se DB_USER, DB_PASSWORD e DB_NAME estão corretos no seu arquivo .env")
 
     def get_all(self, user_id=None):
         conn = self.get_connection()

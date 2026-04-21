@@ -7,14 +7,14 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
 # Import das Rotas (Blueprints)
-from routes.user_routes import user_bp
-from routes.ticket_routes import ticket_bp
-from routes.auth_routes import auth_bp
-from routes.dashboard_routes import dash_bp
-from routes.role_routes import role_bp
+from src.routes.user_routes import user_bp
+from src.routes.ticket_routes import ticket_bp
+from src.routes.auth_routes import auth_bp
+from src.routes.dashboard_routes import dash_bp
+from src.routes.role_routes import role_bp
 
 # Import da sua classe de configuração
-from config.config import Config
+from src.config.config import Config
 
 app = Flask(__name__)
 

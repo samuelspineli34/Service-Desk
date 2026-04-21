@@ -1,5 +1,5 @@
-from dao.ticket_dao import TicketDAO
-from dao.comments_dao import CommentDAO
+from src.dao.ticket_dao import TicketDAO
+from src.dao.comments_dao import CommentDAO
 
 class TicketService:
     def __init__(self):

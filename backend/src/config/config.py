@@ -35,17 +35,21 @@ class Config:
 
     @classmethod
     def get_db_config(cls):
-        """
-        Retorna os parâmetros para o psycopg2.connect()
-        Pode retornar uma string (DSN) ou um dicionário.
-        """
+        # 1. Se existe a URL (Render), usa ela
         if cls.DATABASE_URL:
-            return cls.DATABASE_URL  # Psycopg2 aceita a URL diretamente
+            return cls.DATABASE_URL
         
+        # 2. Se não, monta o dicionário com o que está no .env
+        # Aqui garantimos que o DB_NAME pegue o valor do .env se existir, 
+        # ou o default dependendo do ENV
+        db_name = os.getenv('DB_NAME') 
+        if not db_name:
+            db_name = 'servicedeskdb_prod' if cls.ENV == 'production' else 'servicedeskdb_dev'
+
         return {
             "host": cls.DB_HOST,
             "port": cls.DB_PORT,
             "user": cls.DB_USER,
             "password": cls.DB_PASSWORD,
-            "database": cls.DB_NAME
+            "database": db_name
         }

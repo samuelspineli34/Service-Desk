@@ -1,8 +1,8 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt
-from dao.role_dao import RoleDAO
+from src.dao.role_dao import RoleDAO
 import psycopg2
-from config.config import Config
+from src.config.config import Config
 
 role_bp = Blueprint('role', __name__)
 role_dao = RoleDAO()
