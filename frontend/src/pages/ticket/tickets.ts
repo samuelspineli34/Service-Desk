@@ -16,40 +16,38 @@ const isStaff = ['ADMIN', 'MANAGER', 'TECHNICIAN'].includes(currentUser?.role ||
 // --- LOGICA DE AVALIAÇÃO (RATING) ---
 function openRatingModal(ticketId: string) {
     const ratingHtml = `
-        <div id="rating-modal-container" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
-            <div class="relative bg-white w-full max-w-sm rounded-[2.5rem] shadow-2xl p-8 text-center">
-                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-2xl bg-amber-50 text-amber-500 mb-6">
-                    <span class="material-icons-round text-3xl">stars</span>
+        <div id="rating-modal-container" class="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-in fade-in">
+            <div class="fixed inset-0 bg-[#2d1a0f]/60 backdrop-blur-md"></div>
+            <div class="relative bg-white w-full max-w-sm rounded-[3.5rem] shadow-2xl p-10 text-center border-2 border-orange-100">
+                <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-[2rem] bg-orange-50 text-[#d97706] mb-6 border-2 border-orange-100">
+                    <span class="material-icons-round text-4xl">stars</span>
                 </div>
-                <h3 class="text-2xl font-black text-slate-800 mb-2">Rate Service</h3>
-                <p class="text-slate-500 font-medium mb-8">How satisfied are you with the resolution?</p>
+                <h3 class="text-2xl font-[900] text-[#2d1a0f] mb-2">Rate Service</h3>
+                <p class="text-[#6b4423]/60 font-bold mb-8 text-sm">How satisfied are you with the resolution?</p>
                 
-                <div class="flex justify-center gap-2 mb-8">
+                <div class="flex justify-center gap-2 mb-10">
                     ${[1, 2, 3, 4, 5].map(n => `
-                        <button data-star="${n}" class="w-10 h-10 rounded-xl border-2 border-slate-100 hover:border-amber-400 hover:bg-amber-50 text-slate-400 hover:text-amber-600 font-bold transition-all">${n}</button>
+                        <button data-star="${n}" class="w-12 h-12 rounded-2xl border-2 border-orange-50 bg-white text-[#6b4423] hover:border-[#d97706] hover:bg-orange-50 font-black transition-all">${n}</button>
                     `).join('')}
                 </div>
-                <button id="close-rating-modal" class="text-slate-400 font-bold hover:text-slate-600 transition-colors">Cancel</button>
+                <button id="close-rating-modal" class="text-[#6b4423]/40 font-black uppercase text-[10px] tracking-widest hover:text-[#d97706] transition-colors">Cancel</button>
             </div>
         </div>
     `;
 
     document.body.insertAdjacentHTML('beforeend', ratingHtml);
 
-    // Evento para fechar o modal
     document.getElementById('close-rating-modal')?.addEventListener('click', () => {
         document.getElementById('rating-modal-container')?.remove();
     });
 
-    // Evento para cada estrelinha (botão de nota)
     const starButtons = document.querySelectorAll('[data-star]');
     starButtons.forEach(button => {
         button.addEventListener('click', async () => {
             const rating = button.getAttribute('data-star');
             if (rating) {
                 try {
-                    await apiClient.put(`/ticket/${ticketId}/rate`, { rating: Number(rating) });
+                    await ticketService.rateTicket(ticketId, Number(rating));
                     document.getElementById('rating-modal-container')?.remove();
                     Modal.show({ title: 'Thank you!', message: 'Your feedback was saved.', type: 'success' });
                     loadPage();
@@ -65,50 +63,61 @@ function openRatingModal(ticketId: string) {
 async function openTicketModal(ticket?: Ticket) {
     const modal = document.getElementById('ticket-modal');
     const userSelect = document.getElementById('field-user') as HTMLSelectElement;
-    const auditSection = document.getElementById('audit-section'); // Seleciona a nova aba de log
+    const statusField = document.getElementById('field-status') as HTMLSelectElement;
+    const statusContainer = document.getElementById('status-container');
+    const auditSection = document.getElementById('audit-section');
     const historyContainer = document.getElementById('ticket-history-list');
     const resContainer = document.getElementById('resolution-container');
     const resField = document.getElementById('field-resolution') as HTMLTextAreaElement;
+    const userContainer = document.getElementById('user-assign-container');
 
-    // Mostra o loader interno se necessário ou limpa o histórico anterior
-    if (historyContainer) historyContainer.innerHTML = '<div class="p-10 text-center text-slate-400 text-xs">Loading history...</div>';
+    if (historyContainer) historyContainer.innerHTML = '<div class="p-10 text-center text-[#6b4423]/40 text-xs font-bold uppercase tracking-widest animate-pulse">Consulting archives...</div>';
 
     const users = await userService.getAllUsers();
     userSelect.innerHTML = users.map(u => `<option value="${u.id}">${u.name}</option>`).join('');
 
     if (ticket) {
         // MODO EDIÇÃO
-        (document.getElementById('modal-title')!).textContent = 'Edit Ticket';
+        (document.getElementById('modal-title')!).textContent = 'Modify Ticket';
         (document.getElementById('field-id') as HTMLInputElement).value = ticket.id;
         (document.getElementById('field-title') as HTMLInputElement).value = ticket.title;
         (document.getElementById('field-desc') as HTMLTextAreaElement).value = ticket.description;
-        (document.getElementById('field-status') as HTMLSelectElement).value = ticket.status;
+        statusField.value = ticket.status;
         (document.getElementById('field-priority') as HTMLSelectElement).value = ticket.priority;
         userSelect.value = ticket.user_id;
         resField.value = ticket.resolution || '';
 
-        // Se já estiver fechado, mostra a resolução
-        if (ticket.status === 'CLOSED') {
-            resContainer?.classList.remove('hidden');
+        // Regras de visibilidade conforme o cargo
+        if (!isStaff) {
+            statusContainer?.classList.add('hidden');
+            userContainer?.classList.add('hidden');
         } else {
-            resContainer?.classList.add('hidden');
+            statusContainer?.classList.remove('hidden');
+            userContainer?.classList.remove('hidden');
         }
 
-        // --- Lógica da Auditoria ---
-        auditSection?.classList.remove('hidden'); // Mostra a coluna da direita
-        loadTicketHistory(ticket.id); // Chama a função que você já tem no código
+        // Resolução só aparece se estiver fechado
+        ticket.status === 'CLOSED' ? resContainer?.classList.remove('hidden') : resContainer?.classList.add('hidden');
+
+        auditSection?.classList.remove('hidden');
+        loadTicketHistory(ticket.id);
     } else {
         // MODO CRIAÇÃO
         (document.getElementById('modal-title')!).textContent = 'New Ticket';
         (document.getElementById('ticket-form') as HTMLFormElement).reset();
         (document.getElementById('field-id') as HTMLInputElement).value = '';
-
-        auditSection?.classList.add('hidden'); // Esconde a coluna da direita em tickets novos
+        
+        statusField.value = 'OPEN';
+        auditSection?.classList.add('hidden');
+        resContainer?.classList.add('hidden');
 
         if (!isStaff) {
+            statusContainer?.classList.add('hidden');
+            userContainer?.classList.add('hidden');
             userSelect.value = currentUser?.id || '';
-            const container = document.getElementById('user-assign-container');
-            if (container) container.style.display = 'none';
+        } else {
+            statusContainer?.classList.remove('hidden');
+            userContainer?.classList.remove('hidden');
         }
     }
     modal?.classList.remove('hidden');
@@ -128,7 +137,6 @@ function deleteTicket(id: string) {
     });
 }
 
-// Expõe para os botões do HTML que ainda usam onclick puro
 (window as any).openTicketModal = openTicketModal;
 (window as any).closeTicketModal = () => document.getElementById('ticket-modal')?.classList.add('hidden');
 
@@ -146,7 +154,6 @@ async function loadPage() {
         list.innerHTML = tickets.map(t => {
             const canRate = t.status === 'CLOSED' && !t.rating && t.user_id === currentUser?.id;
 
-            // Bloco de Resolução com Alto Contraste
             const resolutionHtml = t.resolution ? `
                 <div class="mt-4 p-4 bg-orange-50/50 rounded-2xl border-2 border-orange-100 max-w-md animate-in">
                     <div class="flex items-center gap-2 mb-2">
@@ -206,10 +213,7 @@ async function loadPage() {
                 </tr>
             `;
         }).join('');
-        
-        // ATIVAÇÃO DOS EVENTOS SEM ONCLICK (Delegação de Eventos)
 
-        // Botões de Avaliar
         document.querySelectorAll('[data-rate-id]').forEach(btn => {
             btn.addEventListener('click', () => {
                 const id = btn.getAttribute('data-rate-id');
@@ -217,7 +221,6 @@ async function loadPage() {
             });
         });
 
-        // Botões de Deletar
         document.querySelectorAll('[data-delete-id]').forEach(btn => {
             btn.addEventListener('click', () => {
                 const id = btn.getAttribute('data-delete-id');
@@ -225,7 +228,6 @@ async function loadPage() {
             });
         });
 
-        // Botões de Editar
         document.querySelectorAll('[data-edit-id]').forEach(btn => {
             btn.addEventListener('click', () => {
                 const ticketData = btn.getAttribute('data-edit-id');
@@ -244,38 +246,33 @@ async function loadTicketHistory(ticketId: string) {
     if (!container) return;
 
     try {
-        const history = await apiClient.get<any[]>(`/ticket/${ticketId}/history`);
+        const history = await ticketService.getHistory(ticketId);
 
         container.innerHTML = history.map(log => {
-            // Ícones dinâmicos conforme o tipo de alteração
             const icon = log.action.includes('STATUS') ? 'sync' : 'priority_high';
-            const iconColor = log.action.includes('STATUS') ? 'text-blue-500' : 'text-amber-500';
+            const iconColor = log.action.includes('STATUS') ? 'text-blue-500' : 'text-[#d97706]';
 
             return `
-                <div class="relative pl-6 pb-6 border-l-2 border-slate-100 last:border-0">
-                    <!-- Dot do Indicador -->
-                    <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-white border-2 border-slate-200 flex items-center justify-center">
+                <div class="relative pl-6 pb-8 border-l-2 border-orange-100 last:border-0">
+                    <div class="absolute -left-[11px] top-0 w-5 h-5 rounded-full bg-white border-2 border-orange-100 flex items-center justify-center shadow-sm">
                         <span class="material-icons-round text-[10px] ${iconColor}">${icon}</span>
                     </div>
-                    
                     <div class="text-xs">
-                        <p class="text-slate-800 font-black uppercase tracking-tighter mb-1">${log.user}</p>
-                        <p class="text-slate-500 font-medium leading-relaxed">
-                            Changed <span class="text-slate-900 font-bold">${log.action.replace('_CHANGE', '').toLowerCase()}</span> 
-                            from <span class="text-slate-400 line-through">${log.old}</span> 
-                            to <span class="text-blue-600 font-bold">${log.new}</span>
+                        <p class="text-[#2d1a0f] font-black uppercase tracking-tighter mb-1">${log.user}</p>
+                        <p class="text-[#6b4423]/70 font-bold leading-relaxed">
+                            Changed <span class="text-[#2d1a0f] font-black">${log.action.replace('_CHANGE', '').toLowerCase()}</span> 
+                            from <span class="text-[#6b4423]/40 line-through">${log.old}</span> 
+                            to <span class="text-[#d97706] font-black">${log.new}</span>
                         </p>
-                        <p class="text-[10px] text-slate-300 font-bold mt-2 uppercase tracking-widest">${log.date}</p>
+                        <p class="text-[10px] text-orange-300 font-bold mt-2 uppercase tracking-widest">${log.date}</p>
                     </div>
                 </div>
             `;
-        }).join('') || '<div class="text-center py-10 text-slate-300 text-xs italic font-medium">No activity recorded for this ticket.</div>';
+        }).join('') || '<div class="text-center py-10 text-orange-200 text-[10px] font-black uppercase tracking-[0.2em] italic">No activity recorded.</div>';
     } catch (e) {
-        container.innerHTML = '<p class="text-red-400 text-xs text-center p-4">Error loading activity log.</p>';
+        container.innerHTML = '<p class="text-red-400 text-xs text-center font-bold p-4">History unavailable.</p>';
     }
 }
-
-
 
 document.addEventListener('DOMContentLoaded', () => {
     loadPage();
@@ -302,16 +299,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-
-    // Escutador para mudanças no Select de Status dentro do DOMContentLoaded
     document.getElementById('field-status')?.addEventListener('change', (e) => {
         const status = (e.target as HTMLSelectElement).value;
         const resContainer = document.getElementById('resolution-container');
-        if (status === 'CLOSED') {
-            resContainer?.classList.remove('hidden');
-        } else {
-            resContainer?.classList.add('hidden');
-        }
+        status === 'CLOSED' ? resContainer?.classList.remove('hidden') : resContainer?.classList.add('hidden');
     });
-
 });

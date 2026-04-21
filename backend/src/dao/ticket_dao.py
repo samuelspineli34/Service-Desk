@@ -75,11 +75,17 @@ class TicketDAO:
     def create(self, data):
         conn = self.get_connection()
         cursor = conn.cursor()
+        
+        # Forçamos 'OPEN' na criação se o status não for enviado ou for inválido
+        status = data.get('status', 'OPEN')
+        if status not in ['OPEN', 'IN_PROGRESS', 'CLOSED']:
+            status = 'OPEN'
+
         cursor.execute(
             "INSERT INTO tickets (title, description, priority, user_id, status) VALUES (%s, %s, %s, %s, %s)",
-            (data['title'], data['description'], data['priority'], data['user_id'], data.get('status', 'OPEN'))
+            (data['title'], data['description'], data['priority'], data['user_id'], status)
         )
-        conn.commit() # ESSENCIAL!
+        conn.commit()
         cursor.close()
         conn.close()
 
